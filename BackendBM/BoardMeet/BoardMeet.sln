@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33103.184
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BoardMeet", "BoardMeet.csproj", "{FFFF20FB-0037-4678-82BD-B55D6A99DCFF}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FFFF20FB-0037-4678-82BD-B55D6A99DCFF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FFFF20FB-0037-4678-82BD-B55D6A99DCFF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FFFF20FB-0037-4678-82BD-B55D6A99DCFF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FFFF20FB-0037-4678-82BD-B55D6A99DCFF}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {2188AC93-BD54-4495-A2FD-386BE516CCFB}
+	EndGlobalSection
+EndGlobal
