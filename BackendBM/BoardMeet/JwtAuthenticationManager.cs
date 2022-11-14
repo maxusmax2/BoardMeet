@@ -22,7 +22,7 @@ namespace BoardMeet
 
             using (ApplicationContext db = new ApplicationContext())
             {
-                User? authUser = db.Users.First();
+                User authUser = db.Users.Where(x => x.UserName == user.UserName).FirstOrDefault();
                 if (authUser == null)
                 {
                     throw new AuthenticateException("Юзера с таким именем нет");
