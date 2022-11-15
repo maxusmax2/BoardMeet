@@ -7,9 +7,11 @@ namespace BoardMeet
     {
         public DbSet<User> Users { get; set; }
         public DbSet<BoardGame> BoardGames { get; set; }
+        public DbSet<Meet> Meets { get; set; }
+        public DbSet<Comment> Comments { get; set; }
         public ApplicationContext()
         {
-            //Database.EnsureDeleted();//Не на релиз!!!!!!!!!!!!!!!!!!!
+            Database.EnsureDeleted();//Не на релиз!!!!!!!!!!!!!!!!!!!
             Database.EnsureCreated();
         }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
