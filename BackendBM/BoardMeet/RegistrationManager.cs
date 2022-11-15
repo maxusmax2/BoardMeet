@@ -9,7 +9,7 @@ namespace BoardMeet
         {
             using (ApplicationContext db = new ApplicationContext())
             {
-                bool UserExist = db.Users.FirstOrDefault(x => x.UserName == user.UserName) != null;
+                bool UserExist = db.Users.FirstOrDefault(x => x.Email == user.Email) != null;
 
                 if (UserExist)
                 {

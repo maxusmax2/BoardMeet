@@ -22,7 +22,7 @@ namespace BoardMeet
 
             using (ApplicationContext db = new ApplicationContext())
             {
-                User authUser = db.Users.Where(x => x.UserName == user.UserName).FirstOrDefault();
+                User authUser = db.Users.Where(x => x.Email == user.Email).FirstOrDefault();
                 if (authUser == null)
                 {
                     throw new AuthenticateException("Юзера с таким именем нет");
@@ -43,7 +43,7 @@ namespace BoardMeet
             {
                 Subject = new ClaimsIdentity(new Claim[]
                 {
-                    new Claim(ClaimTypes.Name, user.UserName),
+                    new Claim(ClaimTypes.Email, user.Email),
                     new Claim(ClaimTypes.Role, user.Role)
                 }),
                 Expires = DateTime.UtcNow.AddHours(1),
