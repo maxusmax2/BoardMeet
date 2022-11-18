@@ -8,7 +8,7 @@ import { PlayerPage } from "./pages/playerPage/playerPage.jsx";
 
 export const App = () => {
   const [auth,setAuth] = useState(false);
-
+  const url = "http://192.168.1.56:7192";
   return (
     <>
       <Routes>
