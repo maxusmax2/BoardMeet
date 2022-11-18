@@ -1,0 +1,36 @@
+.container{
+    width: inherit;
+    filter: drop-shadow(0px 2px 3px rgba(0, 0, 0, 0.32));
+}
+.item{
+    display: inline-block;
+    width: 50%;
+}
+.container input{
+    display: none;
+}
+.container label {
+	border-right: none;
+    font-weight: 400;
+    font-size: 23px;
+    width: 100%;
+    height: 38px;
+    display: inline-flex;
+    background-color: #EDFFEC;
+    color: #057402; 
+   justify-content: center;
+   align-items: center;
+}
+.item:first-child label {
+	border-radius: 45px 0 0 45px;
+}
+.item:last-child label {
+	border-radius: 0 45px 45px 0;
+}
+.item input:checked + label{
+	background: #64C661;
+    color: #fff;
+}
+.item label:hover {
+	background-color: #C8FEC7;
+}
