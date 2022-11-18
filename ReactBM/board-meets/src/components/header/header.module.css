@@ -1,0 +1,26 @@
+.header{
+    height: 126px;
+    max-width: 100%;
+    background-color: #C8FEC7;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.header__logo{
+    text-align: center;
+}
+.header__name{
+    font-family: 'Anton';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 61px;
+    line-height: 100%;
+    color: #057402;
+    text-transform: uppercase;
+}
+.header__tagline{
+    font-style: normal;
+    font-weight: 300;
+    font-size: 17.8013px;
+    color: #000000;
+}

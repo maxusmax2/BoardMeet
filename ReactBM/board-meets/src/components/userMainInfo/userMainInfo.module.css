@@ -1,0 +1,73 @@
+.userMainInfo__container{
+    background-color:  #EDFFEC;
+    width: 1081px;
+    height: 179px;
+    border: 1px solid #DAFED9;
+    box-shadow: 0px 0px 15px -9px rgba(0, 0, 0, 0.4);
+    border-radius: 44px;
+    display: flex;
+    justify-content: space-between;
+}
+.userMainInfo__avatar{
+    border: 6px solid #EDFFEC;
+    border-radius: 191px;
+    width: 224px;
+    height: 224px;
+    position: absolute;
+    margin-top: -64px;
+    margin-left: 120px;
+}
+.userMainInfo{
+    height: 295px;
+    display: flex;
+    align-items: flex-end;
+    
+}
+.userMainInfo__userName{
+    font-weight: 400;
+    font-size: 32px;
+    line-height: 100%;
+    margin-bottom: 7px;
+}
+.userMainInfo__userStatus{
+    font-weight: 300;
+    font-size: 19px;
+    line-height: 100%;
+    margin-bottom: 7px;
+}
+.userMainInfo__userNameStatus{
+    
+}
+.UserMainInfo__dataItemIcon{
+    margin-right: 17px;
+}
+.userMainInfo__userDataItem{
+    font-weight: 300;
+    font-size: 21.6159px;
+    margin-bottom: 23px;
+    display: flex;
+    align-items: center;
+}
+.userMainInfo__userData{
+
+}
+.userMainInfo__userInfoContainer{
+    display: flex;
+    width:535px;
+    justify-content: space-between;
+    margin-right: 130px;
+    margin-top:24px;
+}
+.userMainInfo__editAvatarIcon{
+    height:24px;
+    width:24px;
+}
+.userMainInfo__editAvatarButton{
+    height:24px;
+    padding: 0;
+    border: 0;
+    margin-top:24px;
+    margin-left: 24px;
+    width:24px;
+    background-color: #EDFFEC;
+}

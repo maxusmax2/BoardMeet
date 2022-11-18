@@ -1,0 +1,102 @@
+.navbar{
+    max-width: 1489px;
+    background: #EDFFEC;
+    border: 1px solid #DAFED9;
+    box-shadow: 0px 0px 15px -9px rgba(151, 71, 255, 0.4);
+    border-radius: 127px;
+    height: 76px;
+    display:flex;
+    justify-content: space-evenly;
+    align-items: center;
+}
+.navbar__search{
+    display: flex;
+    align-items: center;
+    outline: 5px solid #64C661;
+    border-radius: 66px 66px 66px 66px;
+}
+.navbar__searchInput{
+    width: 482px;
+    text-indent: 32px;
+    height: 38px;
+    border: 0;
+    border-radius: 66px 0px 0px 66px;
+    font-size: 19px;
+    outline:none;
+    box-shadow: inset 1px 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.navbar__searchButton{
+    width: 62px;
+    height: 38px; 
+    border: none;
+    border-radius: 0px 66px 66px 0px;
+    background-color: #64C661;
+}
+.navbar__searchButton:active{
+    background-color: #5bb758;
+   
+}
+.navbar__linkList{
+    width: 185px;
+    height: 100%;
+}
+
+.navbar__linkListLink{
+    display: inline-flex;
+    font-size: 25px;
+    font-weight: 300;
+    width: 50%;
+    height: inherit;
+    align-items: center;
+    justify-content: center;
+}
+.navbar__linkListLink:hover{
+    background-color: #C8FEC7;
+}
+.active{
+    background-color: aqua;
+}
+.navbar__profileButton{
+    height: 51px;
+    width:51px;
+    border-radius: 39px;
+    background-color: #64C661;
+    box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.25);
+    border: none;
+    box-sizing: border-box; 
+    padding: 10px 0 0 10px;
+}
+.navbar__profileButton:active{
+
+    background-color: #5bb758;
+    box-shadow: none;
+
+}
+.navbar__profileButton:hover{
+    color: #fff;
+}
+.navbar__logInButton{
+    height: 51px;
+    width:126px;
+    border-radius: 39px;
+    background-color: #64C661;
+    box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.25);
+    border: none;
+    box-sizing: border-box; 
+    padding: 13px 0 0 39px;
+    font-size: 20px;
+    color: #ffffff;
+    font-weight: 400;
+}
+.navbar__logInButton:hover{
+    color: #fff;
+}
+.navbar__logInButton:active{
+
+    background-color: #5bb758;
+    box-shadow: none;
+
+}
+
+
