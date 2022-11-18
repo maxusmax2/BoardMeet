@@ -1,6 +1,6 @@
 BoardMeet/bin
 *.dll
-BackendBM/BoardMeet/.vs/BoardMeet/v17/.suo
 *.v*
 BoardMeet/obj
 *.vsidx
+BackendBM/BoardMeet/.vs
