@@ -4,7 +4,6 @@ import { Logo, Search, User } from "../icons/icons";
 
 
 export const Navbar = ({auth}) => {
-    console.log (auth);
     let buttonLink = <NavLink to = "/logIn" className = {style.logInButton}>LogIn</NavLink>;
 
     if (auth){
