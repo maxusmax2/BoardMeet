@@ -15,7 +15,7 @@ namespace BoardMeet.Models
         public string Link { get; set; }
         
         public User Author { get; set; }
-        //public List<User> Players { get; set; }
+        public List<User> Players { get; set; }
         public List<Comment> Comments  { get; set; }
     }
 }
