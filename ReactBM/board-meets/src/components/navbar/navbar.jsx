@@ -1,5 +1,7 @@
 import style from "./navbar.module.css";
 import { NavLink } from "react-router-dom";
+import { Logo, Search, User } from "../icons/icons";
+
 
 export const Navbar = (props) => {
     console.log (props.auth);
@@ -7,19 +9,19 @@ export const Navbar = (props) => {
 
     if (props.auth){
         buttonLink = 
-            <NavLink to = "/user" className = {style.navbar__profileButton}>
-                <img alt="user" src="assets/images/User.svg"/>
+            <NavLink to = "/user/2" className = {style.navbar__profileButton}>
+                <User/>
             </NavLink> 
     }
     
     return(
         <nav className = {style.navbar}>
             <div className = {style.navbar__logo}>
-                <img alt="logo" src="assets/images/Logo.svg"/>
+                <Logo/>
             </div>
             <div className = {style.navbar__search}>
                 <input type="text" className = {style.navbar__searchInput} placeholder="Search your lover game"></input>
-                <button type="button" className = {style.navbar__searchButton}><img alt="search" src="assets/images/Search.svg"/></button>
+                <button type="button" className = {style.navbar__searchButton}><Search/></button>
             </div>
             
             <div className={style.navbar__linkList}>

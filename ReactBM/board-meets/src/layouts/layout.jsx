@@ -7,11 +7,15 @@ import style from "./layout.module.css";
 export const Layout = (props) => {
     return(
         <>
+        <div className={style.wrap}>
             <Header/>
             <div className={style.navbar}>
                 <Navbar auth={props.auth}/>
             </div>
-            <Outlet/>
+            <div className={style.outlet}>
+                <Outlet/>
+            </div>
+        </div>
             <Footer/>
         </>
     );

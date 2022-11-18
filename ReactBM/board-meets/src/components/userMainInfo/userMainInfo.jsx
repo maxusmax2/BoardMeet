@@ -2,10 +2,13 @@ import style from "./userMainInfo.module.css";
 import { useData } from "../../hooks/useData";
 import { useState } from "react";
 import { FileInput } from "../fileInput/fileInput";
+import { City, EditAvatar, Email, UserName } from "../icons/icons";
 
-export const UserMainInfo = () => {
+export const UserMainInfo = (props) => {
     const [editAvatar,setEditAvatar] = useState(false);
-    const user = useData("https://jsonplaceholder.typicode.com/users/2");
+    const user = useData("https://jsonplaceholder.typicode.com/users/"+props.id);
+    const img = useData("https://jsonplaceholder.typicode.com/photos/"+props.id);
+
     let fileInput = null;
     const editAvatarInputHandler =()=>{
         setEditAvatar(!editAvatar);
@@ -17,9 +20,9 @@ export const UserMainInfo = () => {
    
     return(
         <div className={style.userMainInfo}>
-            <img src = "assets/images/exUser.png" className={style.userMainInfo__avatar}/>
+            <img src = {img?.url} className={style.userMainInfo__avatar}/>
             <div className={style.userMainInfo__container}>
-                <button type="button" className={style.userMainInfo__editAvatarButton} onClick={()=>{editAvatarInputHandler()}}><img src="assets/images/EditAvatar.svg" className={style.userMainInfo__editAvatarIcon}/></button>
+                <button type="button" className={style.userMainInfo__editAvatarButton} onClick={()=>{editAvatarInputHandler()}}><EditAvatar/></button>
                 <div className={style.userMainInfo__userInfoContainer}>
                     <ul className={style.userMainInfo__userNameStatus}>
                         <li className={style.userMainInfo__userName}>@{user?.username}</li>
@@ -28,16 +31,16 @@ export const UserMainInfo = () => {
                     </ul>
                     <ul className={style.userMainInfo__userData}>
                         <li className={style.userMainInfo__userDataItem}>
-                            <img src="assets/images/Username.svg" className={style.UserMainInfo__dataItemIcon}/>
-                            {user?.name}
+                            <UserName/>
+                            <p className={style.UserMainInfo__dataItemText}>{user?.name}</p>
                         </li>
                         <li className={style.userMainInfo__userDataItem}>
-                            <img src="assets/images/Email.svg" className={style.UserMainInfo__dataItemIcon}/>
-                            {user?.email}
+                            <Email/>
+                            <p className={style.UserMainInfo__dataItemText}>{user?.email}</p>
                         </li>
                         <li className={style.userMainInfo__userDataItem}>
-                            <img src="assets/images/City.svg" className={style.UserMainInfo__dataItemIcon}/>
-                            г.{user?.address.city}
+                            <City/>
+                            <p className={style.UserMainInfo__dataItemText}>г.{user?.address.city}</p>
                         </li>
                     </ul>
                 </div>
