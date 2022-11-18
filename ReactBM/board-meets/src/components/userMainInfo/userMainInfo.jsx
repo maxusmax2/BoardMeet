@@ -4,10 +4,10 @@ import { useState } from "react";
 import { FileInput } from "../fileInput/fileInput";
 import { City, EditAvatar, Email, UserName } from "../icons/icons";
 
-export const UserMainInfo = (props) => {
+export const UserMainInfo = ({id}) => {
     const [editAvatar,setEditAvatar] = useState(false);
-    const user = useData("https://jsonplaceholder.typicode.com/users/"+props.id);
-    const img = useData("https://jsonplaceholder.typicode.com/photos/"+props.id);
+    const user = useData("https://jsonplaceholder.typicode.com/users/"+id);
+    const img = useData("https://jsonplaceholder.typicode.com/photos/"+id); //Это заглушка 
 
     let fileInput = null;
     const editAvatarInputHandler =()=>{
@@ -19,28 +19,28 @@ export const UserMainInfo = (props) => {
     
    
     return(
-        <div className={style.userMainInfo}>
-            <img src = {img?.url} className={style.userMainInfo__avatar}/>
-            <div className={style.userMainInfo__container}>
-                <button type="button" className={style.userMainInfo__editAvatarButton} onClick={()=>{editAvatarInputHandler()}}><EditAvatar/></button>
-                <div className={style.userMainInfo__userInfoContainer}>
-                    <ul className={style.userMainInfo__userNameStatus}>
-                        <li className={style.userMainInfo__userName}>@{user?.username}</li>
-                        <li className={style.userMainInfo__userStatus}>{user?.address.street}</li>
+        <div className={style.mainContainer}>
+            <img src = {img?.url} className={style.avatar}/>
+            <div className={style.container}>
+                <button type="button" className={style.editAvatarButton} onClick={()=>{editAvatarInputHandler()}}><EditAvatar/></button>
+                <div className={style.userInfoContainer}>
+                    <ul className={style.userNameStatus}>
+                        <li className={style.userName}>@{user?.username}</li>
+                        <li className={style.userStatus}>{user?.address.street}</li>
                         <li>{fileInput}</li>
                     </ul>
-                    <ul className={style.userMainInfo__userData}>
-                        <li className={style.userMainInfo__userDataItem}>
+                    <ul className={style.userData}>
+                        <li className={style.userDataItem}>
                             <UserName/>
-                            <p className={style.UserMainInfo__dataItemText}>{user?.name}</p>
+                            <p className={style.dataItemText}>{user?.name}</p>
                         </li>
-                        <li className={style.userMainInfo__userDataItem}>
+                        <li className={style.userDataItem}>
                             <Email/>
-                            <p className={style.UserMainInfo__dataItemText}>{user?.email}</p>
+                            <p className={style.dataItemText}>{user?.email}</p>
                         </li>
-                        <li className={style.userMainInfo__userDataItem}>
+                        <li className={style.userDataItem}>
                             <City/>
-                            <p className={style.UserMainInfo__dataItemText}>г.{user?.address.city}</p>
+                            <p className={style.dataItemText}>г.{user?.address.city}</p>
                         </li>
                     </ul>
                 </div>
