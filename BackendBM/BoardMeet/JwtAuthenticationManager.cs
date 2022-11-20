@@ -5,37 +5,30 @@ using System.Security.Claims;
 using System.Text;
 using System.Linq;
 using BoardMeet.UserException;
+using Microsoft.EntityFrameworkCore;
 
 namespace BoardMeet
 {
     public class JwtAuthenticationManager
     {
         private readonly string key;
+        
 
         public JwtAuthenticationManager(string key)
         {
             this.key = key;
         }
 
-        public string Authenticate(User user)
+        public string Authenticate(User user, string password)
         {
-
-            using (ApplicationContext db = new ApplicationContext())
-            {
-                User authUser = db.Users.Where(x => x.Email == user.Email).FirstOrDefault();
-                if (authUser == null)
-                {
-                    throw new AuthenticateException("Юзера с таким именем нет");
-                }
-
-                bool verify = BCrypt.Net.BCrypt.Verify(user.Password, authUser.Password);
+                
+                bool verify = BCrypt.Net.BCrypt.Verify(password, user.Password);
 
                 if (!verify) 
                 {
                     throw new AuthenticateException("Не верный пароль");
                 }
-
-            }
+   
             JwtSecurityTokenHandler tokenHandler = new JwtSecurityTokenHandler();
             var tokenKey = Encoding.ASCII.GetBytes(key);
 

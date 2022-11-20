@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using MessagePack;
+using System.Text.Json.Serialization;
 
 namespace BoardMeet.Models
 {

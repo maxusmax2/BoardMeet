@@ -18,7 +18,7 @@ namespace BoardMeet.Models
         public int AgePlayerUser { get; set; }
         public string GameRool { get; set; }
         public User Author { get; set; }
-        public List<Comment> Comments { get; set; }
+        public List<Comment>? Comments { get; set; }
 
     }
 }

@@ -1,23 +1,15 @@
 ﻿using BoardMeet.Models;
 using BoardMeet.UserException;
+using Microsoft.EntityFrameworkCore;
 
 namespace BoardMeet
 {
     public class RegistrationManager
     {
-        public User Registration(User user)
-        {
-            using (ApplicationContext db = new ApplicationContext())
-            {
-                bool UserExist = db.Users.FirstOrDefault(x => x.Email == user.Email) != null;
+        public User Registration(User user,string password)
+        {            
 
-                if (UserExist)
-                {
-                    throw new RegistrationException("Юзер с таким именем уже есть");
-                }
-
-            }
-            string hash = BCrypt.Net.BCrypt.HashPassword(user.Password);
+            string hash = BCrypt.Net.BCrypt.HashPassword(password);
 
             user.Password = hash;
 

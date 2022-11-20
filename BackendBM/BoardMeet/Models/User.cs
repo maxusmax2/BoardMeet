@@ -1,20 +1,29 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Xml;
 
 namespace BoardMeet.Models
 {
     public class User : BaseEntity
     {
-        public string UserName { get; set; }
+        public string? Email { get; set; }
+        [JsonIgnore]
         public string Password { get; set; }
-        public string Email { get; set; }
-        public string Role { get; set; }
-        public string AvatarUrl { get; set; }
-        public string City { get; set; }
-        public string AboutMe { get; set; }
+        public string? UserName { get; set; }
+        public string? Name { get; set; }
+        public string? Role { get; set; }
+        public string? AvatarUrl { get; set; }
+        public string? City { get; set; }
+        public string? AboutMe { get; set; }
+
         [InverseProperty("Players")]
-        public List<Meet> JoinedMeets { get; set; }
+        public virtual List<Meet>? JoinedMeets { get; set; }
+
         [InverseProperty("Author")]
-        public List<Meet> CreatedMeets { get; set; }
+        public virtual List<Meet>? CreatedMeets { get; set; }
+        
+      
 
     }
 }
