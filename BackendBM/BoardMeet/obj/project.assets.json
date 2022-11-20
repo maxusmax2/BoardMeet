@@ -143,6 +143,26 @@
           "Microsoft.AspNetCore.App"
         ]
       },
+      "Microsoft.AspNetCore.Cors/2.2.0": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.AspNetCore.Http.Extensions": "2.2.0",
+          "Microsoft.Extensions.Configuration.Abstractions": "2.2.0",
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "2.2.0",
+          "Microsoft.Extensions.Logging.Abstractions": "2.2.0",
+          "Microsoft.Extensions.Options": "2.2.0"
+        },
+        "compile": {
+          "lib/netstandard2.0/Microsoft.AspNetCore.Cors.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/netstandard2.0/Microsoft.AspNetCore.Cors.dll": {
+            "related": ".xml"
+          }
+        }
+      },
       "Microsoft.AspNetCore.Cryptography.Internal/6.0.10": {
         "type": "package",
         "compile": {
@@ -1479,11 +1499,10 @@
           }
         }
       },
-      "Microsoft.Extensions.DependencyInjection/6.0.1": {
+      "Microsoft.Extensions.DependencyInjection/7.0.0": {
         "type": "package",
         "dependencies": {
-          "Microsoft.Extensions.DependencyInjection.Abstractions": "6.0.0",
-          "System.Runtime.CompilerServices.Unsafe": "6.0.0"
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "7.0.0"
         },
         "compile": {
           "lib/net6.0/Microsoft.Extensions.DependencyInjection.dll": {
@@ -1496,10 +1515,10 @@
           }
         },
         "build": {
-          "buildTransitive/netcoreapp3.1/_._": {}
+          "buildTransitive/net6.0/_._": {}
         }
       },
-      "Microsoft.Extensions.DependencyInjection.Abstractions/6.0.0": {
+      "Microsoft.Extensions.DependencyInjection.Abstractions/7.0.0": {
         "type": "package",
         "compile": {
           "lib/net6.0/Microsoft.Extensions.DependencyInjection.Abstractions.dll": {
@@ -1512,7 +1531,7 @@
           }
         },
         "build": {
-          "buildTransitive/netcoreapp3.1/_._": {}
+          "buildTransitive/net6.0/_._": {}
         }
       },
       "Microsoft.Extensions.FileProviders.Abstractions/6.0.0": {
@@ -4222,6 +4241,19 @@
         "microsoft.aspnetcore.authentication.jwtbearer.nuspec"
       ]
     },
+    "Microsoft.AspNetCore.Cors/2.2.0": {
+      "sha512": "LFlTM3ThS3ZCILuKnjy8HyK9/IlDh3opogdbCVx6tMGyDzTQBgMPXLjGDLtMk5QmLDCcP3l1TO3z/+1viA8GUg==",
+      "type": "package",
+      "path": "microsoft.aspnetcore.cors/2.2.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "lib/netstandard2.0/Microsoft.AspNetCore.Cors.dll",
+        "lib/netstandard2.0/Microsoft.AspNetCore.Cors.xml",
+        "microsoft.aspnetcore.cors.2.2.0.nupkg.sha512",
+        "microsoft.aspnetcore.cors.nuspec"
+      ]
+    },
     "Microsoft.AspNetCore.Cryptography.Internal/6.0.10": {
       "sha512": "F4YiT2L1H2p5imDno6nGMd/h9y3s0jpCbP0DvvCHA72b2TFRVHaE5qeGqeDkcRMK9d6RauVhXGiAT0zTY6DT+w==",
       "type": "package",
@@ -5647,52 +5679,60 @@
         "useSharedDesignerContext.txt"
       ]
     },
-    "Microsoft.Extensions.DependencyInjection/6.0.1": {
-      "sha512": "vWXPg3HJQIpZkENn1KWq8SfbqVujVD7S7vIAyFXXqK5xkf1Vho+vG0bLBCHxU36lD1cLLtmGpfYf0B3MYFi9tQ==",
+    "Microsoft.Extensions.DependencyInjection/7.0.0": {
+      "sha512": "elNeOmkeX3eDVG6pYVeV82p29hr+UKDaBhrZyWvWLw/EVZSYEkZlQdkp0V39k/Xehs2Qa0mvoCvkVj3eQxNQ1Q==",
       "type": "package",
-      "path": "microsoft.extensions.dependencyinjection/6.0.1",
+      "path": "microsoft.extensions.dependencyinjection/7.0.0",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
         "Icon.png",
         "LICENSE.TXT",
         "THIRD-PARTY-NOTICES.TXT",
+        "buildTransitive/net461/Microsoft.Extensions.DependencyInjection.targets",
+        "buildTransitive/net462/_._",
+        "buildTransitive/net6.0/_._",
         "buildTransitive/netcoreapp2.0/Microsoft.Extensions.DependencyInjection.targets",
-        "buildTransitive/netcoreapp3.1/_._",
-        "lib/net461/Microsoft.Extensions.DependencyInjection.dll",
-        "lib/net461/Microsoft.Extensions.DependencyInjection.xml",
+        "lib/net462/Microsoft.Extensions.DependencyInjection.dll",
+        "lib/net462/Microsoft.Extensions.DependencyInjection.xml",
         "lib/net6.0/Microsoft.Extensions.DependencyInjection.dll",
         "lib/net6.0/Microsoft.Extensions.DependencyInjection.xml",
+        "lib/net7.0/Microsoft.Extensions.DependencyInjection.dll",
+        "lib/net7.0/Microsoft.Extensions.DependencyInjection.xml",
         "lib/netstandard2.0/Microsoft.Extensions.DependencyInjection.dll",
         "lib/netstandard2.0/Microsoft.Extensions.DependencyInjection.xml",
         "lib/netstandard2.1/Microsoft.Extensions.DependencyInjection.dll",
         "lib/netstandard2.1/Microsoft.Extensions.DependencyInjection.xml",
-        "microsoft.extensions.dependencyinjection.6.0.1.nupkg.sha512",
+        "microsoft.extensions.dependencyinjection.7.0.0.nupkg.sha512",
         "microsoft.extensions.dependencyinjection.nuspec",
         "useSharedDesignerContext.txt"
       ]
     },
-    "Microsoft.Extensions.DependencyInjection.Abstractions/6.0.0": {
-      "sha512": "xlzi2IYREJH3/m6+lUrQlujzX8wDitm4QGnUu6kUXTQAWPuZY8i+ticFJbzfqaetLA6KR/rO6Ew/HuYD+bxifg==",
+    "Microsoft.Extensions.DependencyInjection.Abstractions/7.0.0": {
+      "sha512": "h3j/QfmFN4S0w4C2A6X7arXij/M/OVw3uQHSOFxnND4DyAzO1F9eMX7Eti7lU/OkSthEE0WzRsfT/Dmx86jzCw==",
       "type": "package",
-      "path": "microsoft.extensions.dependencyinjection.abstractions/6.0.0",
+      "path": "microsoft.extensions.dependencyinjection.abstractions/7.0.0",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
         "Icon.png",
         "LICENSE.TXT",
         "THIRD-PARTY-NOTICES.TXT",
+        "buildTransitive/net461/Microsoft.Extensions.DependencyInjection.Abstractions.targets",
+        "buildTransitive/net462/_._",
+        "buildTransitive/net6.0/_._",
         "buildTransitive/netcoreapp2.0/Microsoft.Extensions.DependencyInjection.Abstractions.targets",
-        "buildTransitive/netcoreapp3.1/_._",
-        "lib/net461/Microsoft.Extensions.DependencyInjection.Abstractions.dll",
-        "lib/net461/Microsoft.Extensions.DependencyInjection.Abstractions.xml",
+        "lib/net462/Microsoft.Extensions.DependencyInjection.Abstractions.dll",
+        "lib/net462/Microsoft.Extensions.DependencyInjection.Abstractions.xml",
         "lib/net6.0/Microsoft.Extensions.DependencyInjection.Abstractions.dll",
         "lib/net6.0/Microsoft.Extensions.DependencyInjection.Abstractions.xml",
+        "lib/net7.0/Microsoft.Extensions.DependencyInjection.Abstractions.dll",
+        "lib/net7.0/Microsoft.Extensions.DependencyInjection.Abstractions.xml",
         "lib/netstandard2.0/Microsoft.Extensions.DependencyInjection.Abstractions.dll",
         "lib/netstandard2.0/Microsoft.Extensions.DependencyInjection.Abstractions.xml",
         "lib/netstandard2.1/Microsoft.Extensions.DependencyInjection.Abstractions.dll",
         "lib/netstandard2.1/Microsoft.Extensions.DependencyInjection.Abstractions.xml",
-        "microsoft.extensions.dependencyinjection.abstractions.6.0.0.nupkg.sha512",
+        "microsoft.extensions.dependencyinjection.abstractions.7.0.0.nupkg.sha512",
         "microsoft.extensions.dependencyinjection.abstractions.nuspec",
         "useSharedDesignerContext.txt"
       ]
@@ -11196,10 +11236,13 @@
       "BCrypt.Net-Next >= 4.0.3",
       "Microsoft.AspNetCore.Authentication >= 2.2.0",
       "Microsoft.AspNetCore.Authentication.JwtBearer >= 6.0.3",
+      "Microsoft.AspNetCore.Cors >= 2.2.0",
       "Microsoft.AspNetCore.Identity.EntityFrameworkCore >= 6.0.10",
       "Microsoft.AspNetCore.Identity.UI >= 6.0.10",
+      "Microsoft.EntityFrameworkCore.Relational >= 6.0.10",
       "Microsoft.EntityFrameworkCore.SqlServer >= 6.0.10",
       "Microsoft.EntityFrameworkCore.Tools >= 6.0.10",
+      "Microsoft.Extensions.DependencyInjection >= 7.0.0",
       "Microsoft.VisualStudio.Web.CodeGeneration.Design >= 6.0.10",
       "Pomelo.EntityFrameworkCore.MySql >= 6.0.2",
       "Swashbuckle.AspNetCore >= 6.2.3"
@@ -11261,11 +11304,19 @@
             "target": "Package",
             "version": "[6.0.3, )"
           },
+          "Microsoft.AspNetCore.Cors": {
+            "target": "Package",
+            "version": "[2.2.0, )"
+          },
           "Microsoft.AspNetCore.Identity.EntityFrameworkCore": {
             "target": "Package",
             "version": "[6.0.10, )"
           },
           "Microsoft.AspNetCore.Identity.UI": {
+            "target": "Package",
+            "version": "[6.0.10, )"
+          },
+          "Microsoft.EntityFrameworkCore.Relational": {
             "target": "Package",
             "version": "[6.0.10, )"
           },
@@ -11278,6 +11329,10 @@
             "suppressParent": "All",
             "target": "Package",
             "version": "[6.0.10, )"
+          },
+          "Microsoft.Extensions.DependencyInjection": {
+            "target": "Package",
+            "version": "[7.0.0, )"
           },
           "Microsoft.VisualStudio.Web.CodeGeneration.Design": {
             "target": "Package",
