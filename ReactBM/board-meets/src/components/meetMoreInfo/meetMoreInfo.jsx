@@ -1,5 +1,5 @@
 import style from "./meetMoreInfo.module.css";
-import { Change, Communication, Participants, Time } from "../icons/icons";
+import { Change, Communication, LightMaxTime, Participants, Time } from "../icons/icons";
 import { NavLink } from "react-router-dom";
 export const MeetMoreInfo = ({meet, typeMeet}) => {
     let buttonValue = typeMeet==="Joined"?"Leave":typeMeet==="Created"?"Delete Meet":"Join";
@@ -16,7 +16,7 @@ export const MeetMoreInfo = ({meet, typeMeet}) => {
                     <p className={style.otherInfoText}>{meet.postId}/{meet.id}</p>
                 </li>
                 <li className={style.infoItem}>
-                    <Time/>
+                    <LightMaxTime/>
                     <p className={style.otherInfoText}>{meet.postId} ч.</p>
                 </li>
                 <li className={style.infoItem}>
