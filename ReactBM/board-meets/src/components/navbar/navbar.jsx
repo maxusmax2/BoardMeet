@@ -19,7 +19,7 @@ export const Navbar = ({auth,user}) => {
                 <Logo/>
             </div>
             <div className = {style.search}>
-                <input type="text" className = {style.searchInput} placeholder="Search your lover game"></input>
+                <input type="search" className = {style.searchInput} placeholder="Search your lover game"></input>
                 <button type="button" className = {style.searchButton}><Search/></button>
             </div>
             
