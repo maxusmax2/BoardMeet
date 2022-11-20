@@ -6,7 +6,7 @@ import { City, EditAvatar, Email, UserName } from "../icons/icons";
 
 export const UserMainInfo = ({id}) => {
     const [editAvatar,setEditAvatar] = useState(false);
-    const user = useData("https://jsonplaceholder.typicode.com/users/"+id);
+    const user = useData("http://192.168.1.56:5057/api/User/" + id)
     const img = useData("https://jsonplaceholder.typicode.com/photos/"+id); //Это заглушка 
 
     let fileInput = null;
@@ -20,19 +20,19 @@ export const UserMainInfo = ({id}) => {
    
     return(
         <div className={style.mainContainer}>
-            <img src = {img?.url} className={style.avatar}/>
+            <img src = {img?.url} alt = "userPhoto" className={style.avatar}/>
             <div className={style.container}>
                 <button type="button" className={style.editAvatarButton} onClick={()=>{editAvatarInputHandler()}}><EditAvatar/></button>
                 <div className={style.userInfoContainer}>
                     <ul className={style.userNameStatus}>
-                        <li className={style.userName}>@{user?.username}</li>
-                        <li className={style.userStatus}>{user?.address.street}</li>
+                        <li className={style.userName}>@{user?.userName}</li>
+                        <li className={style.userStatus}>{user?.aboutMe}</li>
                         <li>{fileInput}</li>
                     </ul>
                     <ul className={style.userData}>
                         <li className={style.userDataItem}>
                             <UserName/>
-                            <p className={style.dataItemText}>{user?.name}</p>
+                             <p className={style.dataItemText}>{user?.userName}</p> {/*тут должен быть фио */}
                         </li>
                         <li className={style.userDataItem}>
                             <Email/>
@@ -40,7 +40,7 @@ export const UserMainInfo = ({id}) => {
                         </li>
                         <li className={style.userDataItem}>
                             <City/>
-                            <p className={style.dataItemText}>г.{user?.address.city}</p>
+                            <p className={style.dataItemText}>г.{user?.city}</p>
                         </li>
                     </ul>
                 </div>

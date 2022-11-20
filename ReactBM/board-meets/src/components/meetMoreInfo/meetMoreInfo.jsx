@@ -2,11 +2,10 @@ import style from "./meetMoreInfo.module.css";
 import { Change, Communication, Participants, Time } from "../icons/icons";
 import { NavLink } from "react-router-dom";
 export const MeetMoreInfo = ({meet, typeMeet}) => {
-
-    let buttonValue = typeMeet=="Joined"?"Leave":typeMeet=="Created"?"Delete Meet":"Join";
+    let buttonValue = typeMeet==="Joined"?"Leave":typeMeet==="Created"?"Delete Meet":"Join";
     let linkChange = null;
-    if(typeMeet == "Created"){
-        linkChange = <NavLink to="/user/changeMeet" className={style.linkChange}><Change/></NavLink>
+    if(typeMeet === "Created"){
+        linkChange = <NavLink to="changeMeet" className={style.linkChange}><Change/></NavLink>
     }
     return(
         <section  className={style.moreInfo}>
