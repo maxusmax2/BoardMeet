@@ -1,3 +1,15 @@
-.container{
-    max-width: 1081px;
+.switch{
+    margin-top: 33px;
+    margin-bottom: 33px;
+}
+.meetsList{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.meetsItem{
+    margin-top: 35px;
+}
+.meetsItem:last-child{
+    margin-bottom: 35px;
 }
