@@ -7,8 +7,10 @@ export const Filter = () => {
     return(
         <form className = {style.container}>
             <div className={style.inputContainer}>
-                <label htmlFor="city" className={style.inputIcon}><Location/></label>
-                <input type="text" id="city" className={style.inputText} placeholder="Введите город"></input>
+                <div className={style.inputCity}>
+                    <label htmlFor="city" className={style.inputIcon}><Location/></label>
+                    <input type="text" id="city" className={style.inputText} placeholder="Введите город"></input>
+                </div>
                 <InputDate/>
             </div>
             <input type="button" value="Reset" className={style.button}></input>

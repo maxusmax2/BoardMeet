@@ -8,10 +8,13 @@
     font-weight: 400;
     font-size: 15px;
     line-height: 100%;  
-    outline: none;
     color: #9E9A9A;
-    text-indent: 10px;
-    margin-right: 20px;
+    box-sizing: border-box;
+    padding: 0 26px 0 10px;
+}
+.inputText:focus{
+    outline: 3px solid #057402;
+
 }
 .container{
     display: flex;
@@ -27,6 +30,10 @@
 }
 .inputContainer{
     display: flex;
+}
+.inputCity{
+    position: relative;
+    margin-right: 20px;
 }
 .button{
     background: #EDFFEC;
@@ -46,9 +53,7 @@
     
 }
 .inputIcon{
-    width: 265px;
-    display: flex;
-    justify-content: flex-end;
     position: absolute;
-    margin-left: auto;
+    top:4px;
+    right: 4px;
 }
