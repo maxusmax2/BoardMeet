@@ -1,0 +1,12 @@
+.navbar{
+    margin: 20px auto;
+    max-width: 1489px;
+}
+.outlet{
+    box-sizing: border-box;
+    min-height: 100%;
+    padding-bottom: 91px;
+}
+.wrap{
+    min-height: 100%;
+}
