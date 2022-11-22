@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Cors;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.Configuration;
@@ -77,7 +78,12 @@ if (app.Environment.IsDevelopment())
 }
 app.UseCors("corspolicy");
 
-
+app.UseStaticFiles(new StaticFileOptions() // обрабатывает запросы к каталогу wwwroot/html
+{
+    FileProvider = new PhysicalFileProvider(
+            Path.Combine("C:\\Users\\maxus\\OneDrive\\images", "" )),
+    RequestPath = new PathString("/api/images")
+});
 app.UseAuthentication();
 app.UseAuthorization();
 

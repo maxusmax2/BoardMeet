@@ -12,6 +12,7 @@ namespace BoardMeet
         public ApplicationContext(DbContextOptions<ApplicationContext> options) : base(options)
         {
             //Database.EnsureDeleted();//Не на релиз!!!!!!!!!!!!!!!!!!!
+           
             //this.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
             Database.EnsureCreated();
 
