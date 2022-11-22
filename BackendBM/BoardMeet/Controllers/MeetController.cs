@@ -39,7 +39,7 @@ namespace BoardMeet.Controllers
         public async Task<IActionResult> Get(int id)
         {
 
-            Meet meet = await _context.Meets
+            var meet = await _context.Meets
             .Include(m => m.Players)
             .Include(m => m.Author)
             .Where(m => m.Id == id)
@@ -65,6 +65,21 @@ namespace BoardMeet.Controllers
         }
 
         // POST api/<MeetController>
+        [HttpPost("Edit/{id}")]
+        public async Task<IActionResult> Edit([FromBody] Meet EditMeet, int id)
+        {
+            Meet? meet = await _context.Meets.FindAsync(id);
+            if(meet == null) 
+            {
+                BadRequest("Такого пользователя не существует");
+            }
+            meet = EditMeet;
+
+            await _context.SaveChangesAsync(true);
+            return Ok(meet);
+        }
+
+        // POST api/<MeetController>
         [HttpPost("JoinMeet/{meetId}/User/{userId}")]
         public async Task<IActionResult> JoinMeet(int meetId,int userId)
         {
@@ -78,10 +93,15 @@ namespace BoardMeet.Controllers
             {
                 return NotFound();
             }
+            if (meet.Author.Id == userId) 
+            {
+                return BadRequest("Автор мероприятия не может быть участником");
+            }
             if(meet.Players == null)
             {
                 meet.Players = new List<User>();
             }
+            meet.PeopleCount++;
             meet.Players.Add(user);
             await _context.SaveChangesAsync(true);
 
@@ -105,6 +125,7 @@ namespace BoardMeet.Controllers
             {
                 meet.Players = new List<User>();
             }
+            meet.PeopleCount--;
             meet.Players.Remove(user);
             await _context.SaveChangesAsync(true);
 
