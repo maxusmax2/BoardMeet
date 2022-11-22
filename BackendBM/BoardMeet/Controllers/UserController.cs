@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
+using NuGet.Protocol;
 using System.Drawing.Drawing2D;
 
 namespace BoardMeet.Controllers
@@ -34,11 +35,11 @@ namespace BoardMeet.Controllers
         public async Task<IActionResult> AuthenticationUser([FromBody] AuthData auth)
         {
             string token;
-            
-
+            User AuthUser;
+           
             try
             {
-                User AuthUser = await _context.Users.Where(x => x.Email == auth.Email).FirstOrDefaultAsync();
+                AuthUser = await _context.Users.Where(x => x.Email == auth.Email).FirstOrDefaultAsync();
                 
                 if (AuthUser == null)
                 {
@@ -50,8 +51,11 @@ namespace BoardMeet.Controllers
             {
                 return Unauthorized(ex.Message);
             }
-
-            return Ok(token);
+            AuthResponse Response = new AuthResponse();
+            Response.token = token;
+            Response.AuthUser = AuthUser;
+            
+            return Ok(Response);
         }
 
         [AllowAnonymous]
