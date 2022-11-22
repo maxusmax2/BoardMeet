@@ -3,16 +3,15 @@ import { NavLink, useParams } from "react-router-dom";
 import { AddButton } from "../../components/addButton/addButton";
 import { MeetCard } from "../../components/meetCard/meetCard";
 import { Switch } from "../../components/switch/switch";
-import { useData } from "../../hooks/useData";
+import { useDataGet } from "../../hooks/useDataGet";
 import style from "./playerPage.module.css";
 
-export const PlayerPage = () => {
+export const PlayerPage = ({url}) => {
 
     let {userId} = useParams();
+    const [typeMeet,setTypeMeet] = useState({type:"Created",url:url+"User/CreatedMeet/"+userId});
 
-    const [typeMeet,setTypeMeet] = useState({type:"Created",url:"http://192.168.1.56:5057/api/User/CreatedMeet/"+userId});
-
-    const meets = useData(typeMeet.url);
+    const meets = useDataGet(typeMeet.url);
 
     let linkAdd =null;
 
@@ -23,11 +22,11 @@ export const PlayerPage = () => {
 
     const radioHandler = (value) => {
         switch(value){
-            case "1":{}
-                setTypeMeet({type:"Created",url:"http://192.168.1.56:5057/api/User/CreatedMeet/"+userId});
+            case "1":
+                setTypeMeet({type:"Created",url:url+"User/CreatedMeet/"+userId});
                 break;
             case "2":
-                setTypeMeet({type:"Joined",url:"http://192.168.1.56:5057/api/User/JoinedMeet/"+userId});
+                setTypeMeet({type:"Joined",url:url+"User/JoinedMeet/"+userId});
                 break;
         }
     }
@@ -40,7 +39,7 @@ export const PlayerPage = () => {
             {linkAdd}
             <ul className = {style.meetsList}>
                 {!!meets?.length && meets.map((meet) => 
-                    <li key={meet.id} className={style.meetsItem}><MeetCard meet={meet} typeMeet = {typeMeet.type}/></li>
+                    <li key={meet.id} className={style.meetsItem}><MeetCard meet={meet} userId={userId} url = {url}/></li>
                 )}
             </ul>
         </>

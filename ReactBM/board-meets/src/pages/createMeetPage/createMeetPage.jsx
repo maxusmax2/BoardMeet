@@ -1,15 +1,20 @@
 
+import { useParams } from "react-router-dom";
 import { Date } from "../../components/icons/icons";
-import { MeetForm } from "../../components/meetForm/meetForm";
+import { CreateMeetForm } from "../../components/createMeetForm/createMeetForm";
 import { Title } from "../../components/title/title";
 import style from "./createMeetPage.module.css";
 
 export const CreateMeetPage = () => {
 
+    let {userId} = useParams();
+
     return(
         <div className={style.container}>
-            <Title content="Create Meet"/>
-            <MeetForm/>
+            <div className={style.title}>
+                <Title content="Create Meet"/>
+            </div>
+                <CreateMeetForm />
         </div>
     );
 }

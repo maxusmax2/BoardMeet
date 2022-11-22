@@ -2,14 +2,14 @@ import { NavLink, useParams } from "react-router-dom";
 import { AddButton } from "../../components/addButton/addButton";
 import { MeetCard } from "../../components/meetCard/meetCard";
 import { Title } from "../../components/title/title";
-import { useData } from "../../hooks/useData";
+import { useDataGet } from "../../hooks/useDataGet";
 import style from "./organizationPage.module.css";
 
-export const OrganizationPage = () => {
+export const OrganizationPage = ({url}) => {
 
     let {userId} = useParams();
 
-    const meets = useData("https://jsonplaceholder.typicode.com/comments?postId=1");
+    const meets = useDataGet(url+"User/CreatedMeet/"+userId);
 
     return(
         <>
@@ -20,7 +20,7 @@ export const OrganizationPage = () => {
             <NavLink to = { `/user/${userId}/createMeet`}> <AddButton/></NavLink>
             <ul className = {style.meetsList}>
                 {!!meets?.length && meets.map((meet) => 
-                    <li key={meet.id} className={style.meetsItem}><MeetCard meet={meet} typeMeet = "Created"/></li>
+                    <li key={meet.id} className={style.meetsItem}><MeetCard url = {url} meet={meet} userId={userId}/></li>
                 )}
             </ul>
         </>

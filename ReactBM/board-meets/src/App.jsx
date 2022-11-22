@@ -7,35 +7,41 @@ import { MeetsList } from "./pages/meetsList/meetsList";
 import { UserPageLayout } from "./layouts/userPageLayout/userPageLayout.jsx";
 import { PlayerPage } from "./pages/playerPage/playerPage";
 import { OrganizationPage } from "./pages/organizationPage/organizationPage";
-import { useData } from "./hooks/useData";
+import { NotFoundPage } from "./pages/notFoundPage/notFoundPage";
 import { CreateMeetPage } from "./pages/createMeetPage/createMeetPage";
+import { Registration } from "./pages/registration/registration";
+
 
 export const App = () => {
-  const [auth,setAuth] = useState(false);
+
   const [user,setUser] = useState(null);
-  const buttonHandler = (user) => {
-      setAuth(true);
+  const [token,setToken] = useState(null);
+  
+  const url = "http://25.43.153.92:5057/api/";
+
+  const buttonHandler = (user,token) => {
       setUser(user);
-
+      setToken(token);
   }
-
-  const url = "http://192.168.1.56:5057/api/User/4";
+ 
   return (
     <>
       <Routes>
-        <Route path="/" element={<MainLayout auth={auth} user = {user}/>}>
-          <Route path="/meets" element={<MeetsList user = {user}/>}/>
+        <Route path="/" exact element={<MainLayout user = {user}/>}>
+          <Route path="/" element={<MeetsList userId = {user?.id} url = {url} role = {user?.role}/>}/>
           <Route path="/games" element={<GamesList/>}/>
-          <Route path="/user/:userId" element={<UserPageLayout/>}>
+          <Route path="/user/:userId" element={<UserPageLayout url = {url}/>}>
             <Route path="createMeet" element={<CreateMeetPage/>}/>
             <Route path="changeMeet/:meetId" element={<MeetsList/>}/>
-            <Route path="player" element={<PlayerPage/>}/>
-            <Route path="organization" element={<OrganizationPage/>}/>
+            <Route path="player" element={<PlayerPage url = {url} />}/>
+            <Route path="organization" element={<OrganizationPage url = {url} />}/>
             <Route path="publisher" element={<MeetsList/>}/>
             <Route path="administrator" element={<MeetsList/>}/>
           </Route>
         </Route>
-        <Route path="/logIn" element={<LogIn buttonHandler={buttonHandler}/>}></Route>
+        <Route path="/logIn" element={<LogIn buttonHandler={buttonHandler} url = {url}/>}></Route>
+        <Route path="/registration" element={<Registration/>}></Route>
+        <Route path="*" element={<NotFoundPage/>} />
       </Routes>
     </>
   );

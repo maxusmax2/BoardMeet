@@ -1,12 +1,10 @@
 import { Filter } from "../../components/filter/filter";
 import { MeetCard } from "../../components/meetCard/meetCard";
-import { useData } from "../../hooks/useData";
+import { useDataGet } from "../../hooks/useDataGet";
 import style from "./meetsList.module.css";
 
-export const MeetsList = ({user}) => {
-    console.log(user);
-    const meets = useData("http://192.168.1.56:5057/api/Meet");
-      console.log(meets);
+export const MeetsList = ({userId,url,role}) => {
+    const meets = useDataGet(url + "Meet");
     return(
         <div className={style.container}>
             <div className={style.filter}>
@@ -15,7 +13,7 @@ export const MeetsList = ({user}) => {
 
             <ul className = {style.meetsList}>
                 {!!meets?.length && meets.map((meet) => 
-                    <li key={meet.id} className={style.meetsItem}><MeetCard meet={meet} typeMeet = {user?.id === meet.authorId?"Created": user?.id === meet.playerId? "Joined": "NonJoined"}/></li>
+                    <li key={meet.id} className={style.meetsItem}><MeetCard url = {url} meet={meet} userId={userId} role={role}/></li>
                 )}
             </ul>
         </div>

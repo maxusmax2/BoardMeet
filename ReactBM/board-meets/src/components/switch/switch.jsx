@@ -3,8 +3,9 @@ import style from "./switch.module.css";
 export const Switch = (props) => {
     const [check,setCheck] = useState("1");
     const radioHandler = (event) => {
-        setCheck(event.target.value);
-        {props.radioHandler(event.target.value)}
+        let value = event.target.value;
+        setCheck(value);
+        {props.radioHandler(value)}
     }
 
     return(

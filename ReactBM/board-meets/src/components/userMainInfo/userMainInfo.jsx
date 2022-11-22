@@ -1,13 +1,12 @@
 import style from "./userMainInfo.module.css";
-import { useData } from "../../hooks/useData";
+import { useDataGet } from "../../hooks/useDataGet";
 import { useState } from "react";
 import { FileInput } from "../fileInput/fileInput";
 import { City, EditAvatar, Email, UserName } from "../icons/icons";
 
-export const UserMainInfo = ({id}) => {
+export const UserMainInfo = ({id,url}) => {
     const [editAvatar,setEditAvatar] = useState(false);
-    const user = useData("http://192.168.1.56:5057/api/User/" + id)
-    const img = useData("https://jsonplaceholder.typicode.com/photos/"+id); //Это заглушка 
+    const user = useDataGet(url + "User/" + id)
 
     let fileInput = null;
     const editAvatarInputHandler =()=>{
@@ -20,7 +19,7 @@ export const UserMainInfo = ({id}) => {
    
     return(
         <div className={style.mainContainer}>
-            <img src = {img?.url} alt = "userPhoto" className={style.avatar}/>
+            <img src = {url + user?.avatarUrl} alt = "userPhoto" className={style.avatar}/>
             <div className={style.container}>
                 <button type="button" className={style.editAvatarButton} onClick={()=>{editAvatarInputHandler()}}><EditAvatar/></button>
                 <div className={style.userInfoContainer}>
@@ -32,7 +31,7 @@ export const UserMainInfo = ({id}) => {
                     <ul className={style.userData}>
                         <li className={style.userDataItem}>
                             <UserName/>
-                             <p className={style.dataItemText}>{user?.userName}</p> {/*тут должен быть фио */}
+                             <p className={style.dataItemText}>{user?.name}</p> 
                         </li>
                         <li className={style.userDataItem}>
                             <Email/>
