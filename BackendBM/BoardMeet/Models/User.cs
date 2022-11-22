@@ -1,7 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
+using System.Text.Json;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Xml;
+using System.Text.Json.Serialization;
 
 namespace BoardMeet.Models
 {

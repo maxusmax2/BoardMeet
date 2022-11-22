@@ -11,8 +11,9 @@ namespace BoardMeet.Models
         
         public string Name { get; set; }
         public int PeopleCount { get; set; }
-        public int DurationMin { get; set; }
-        public int DurationMax { get; set; }
+        public int PeopleCountMax { get; set; }
+        public int Duration { get; set; }
+        public string? Link { get; set; }
         public DateTime? Date { get; set; }
         public string Location { get; set; }
         public string Games { get; set; }
