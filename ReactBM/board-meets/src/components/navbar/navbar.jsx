@@ -3,14 +3,15 @@ import { NavLink } from "react-router-dom";
 import { Logo, Search, User } from "../icons/icons";
 
 
-export const Navbar = ({auth,user}) => {
+export const Navbar = ({user}) => {
     let buttonLink = <NavLink to = "/logIn" className = {style.logInButton}>LogIn</NavLink>;
 
-    if (auth){
+    if (user){
         buttonLink = 
             <NavLink to = {`user/${user.id}/${user.role}`} className = {style.profileButton}>
                 <User/>
             </NavLink> 
+            
     }
     
     return(
@@ -24,7 +25,7 @@ export const Navbar = ({auth,user}) => {
             </div>
             
             <div className={style.linkList}>
-                <NavLink to = "/meets" className={style.linkListLink} >Meets</NavLink>
+                <NavLink to = "/" className={style.linkListLink} >Meets</NavLink>
                 <NavLink to = "/games" className={style.linkListLink}>Games</NavLink>
             </div>
 
