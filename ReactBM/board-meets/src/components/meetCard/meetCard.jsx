@@ -8,7 +8,7 @@ export const MeetCard = ({meet,url,userId,role}) => {
 
     let moreInfoSection = null;
     if (moreInfo){
-        moreInfoSection = <MeetMoreInfo  meet={meet} userId={userId}/>;
+        moreInfoSection = <MeetMoreInfo  meet={meet} userId={userId} url={url}/>;
     }
     
     const moreInfoHandler = () => {
