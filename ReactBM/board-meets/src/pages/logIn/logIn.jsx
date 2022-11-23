@@ -3,13 +3,10 @@ import style from "./logIn.module.css";
 import { Back, Write } from "../../components/icons/icons";
 import { useForm } from 'react-hook-form';
 import axios from "axios";
-import { useState } from "react";
-
 
 export const LogIn = ({buttonHandler,url}) => {
     const {register,handleSubmit} = useForm();
     const navigate = useNavigate();
-    const {auth,setAuth} = useState(false);
    
     const onSubmit = (data) => {
         const body = {email:data.email, password:data.password};
@@ -19,7 +16,17 @@ export const LogIn = ({buttonHandler,url}) => {
             buttonHandler(response.data.authUser,response.data.token);
         })
         .then(()=>navigate("/"))
-        .catch(console.log("Ошибка входа"));
+        .catch((err) => {
+            if (err.response) { 
+                console.log("a");
+            } 
+            else if (err.request) { 
+                console.log("b");
+            } 
+            else { 
+                console.log("c");
+            } 
+        });
         
 
     };
