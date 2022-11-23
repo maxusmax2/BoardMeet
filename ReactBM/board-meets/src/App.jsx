@@ -31,7 +31,7 @@ export const App = () => {
           <Route path="/" element={<MeetsList userId = {user?.id} url = {url} role = {user?.role}/>}/>
           <Route path="/games" element={<GamesList/>}/>
           <Route path="/user/:userId" element={<UserPageLayout url = {url}/>}>
-            <Route path="createMeet" element={<CreateMeetPage/>}/>
+            <Route path="createMeet" element={<CreateMeetPage url ={url}/>}/>
             <Route path="changeMeet/:meetId" element={<MeetsList/>}/>
             <Route path="player" element={<PlayerPage url = {url} />}/>
             <Route path="organization" element={<OrganizationPage url = {url} />}/>

@@ -1,15 +1,43 @@
+import axios from "axios";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { useNavigate} from "react-router-dom";
+import { getConfig } from "../../helpers/getConfig";
 import { Communication, Date, LightMaxTime, LightPlayers, Location, MinusButton, PlusButton, Time, Write } from "../icons/icons";
 import style from "./createMeetForm.module.css";
 
-export const CreateMeetForm = () => {
-
+export const CreateMeetForm = ({userId,url}) => {
     const {register,handleSubmit} = useForm();
     const [gameList,setGameList] = useState([]); 
+    const navigate = useNavigate();
 
     const onSubmit = (data) => {
-        console.log(data);
+        const body = {
+            name: data.name,
+            peopleCountMax: data.players,
+            duration: data.maxTime,
+            link: data.communication,
+            date: data.date + "T" + data.time,
+            location: data.location,
+            games: `${JSON.stringify(gameList)}`,
+            authorId: userId
+            };
+        axios.post(url + "Meet/Create",body,getConfig())
+        .then((response) => {
+            console.log(response.data);
+        })
+        .then(()=>navigate(`/`))
+        .catch((err) => {
+            if (err.response) { 
+                console.log("a");
+            } 
+            else if (err.request) { 
+                console.log("b");
+            } 
+            else { 
+                console.log("c");
+            } 
+        });
     };
 
     const plusButtonHandler = (data) => {
