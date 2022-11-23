@@ -2,14 +2,12 @@ import style from "./meetMoreInfo.module.css";
 import { Change, Communication, LightMaxTime, Participants, Time } from "../icons/icons";
 import { NavLink } from "react-router-dom";
 import { MeetButton } from "../meetButton/meetButton";
-export const MeetMoreInfo = ({meet, userId,role}) => {
-    
-    userId = parseInt(userId);
-    let playersIdList = meet.players?.length&&meet.players.map((player) => player.id);
+export const MeetMoreInfo = ({meet, userId,role,url}) => {
+
+    let playersIdList = meet.players.length&&meet.players.map((player) => player.id);
 
     let linkChange = null;
     let gameList = JSON.parse(meet.games);
-
                
     if(userId==meet.authorId){
         linkChange = <NavLink to={`/user/${meet.authorId}/changeMeet/${meet.id}`} className={style.linkChange}><Change/></NavLink>
@@ -29,7 +27,7 @@ export const MeetMoreInfo = ({meet, userId,role}) => {
                 </li>
                 <li className={style.infoItem}>
                     <Communication/>
-                    <p className={style.otherInfoText}>{meet.link}</p>
+                    <p className={style.otherInfoText}>{meet.link?meet.link:"Ссылка не указана"}</p>
                 </li>
             </ul>
             <div className={style.horisontLine}/>
@@ -42,11 +40,11 @@ export const MeetMoreInfo = ({meet, userId,role}) => {
             <div className={style.horisontLine}/>
             <ul className={style.otherInfoList}>
             <li className={style.infoItem}> <p className={style.infoTitle}>Participants:</p></li>
-                {meet.players.map((player) => 
-                    <li className={style.infoItem}><NavLink to = {playersIdList.includes(userId)?`/user/${player.id}/${player.role}`:`/user/${player.id}`}>@{player.userName}</NavLink></li>      
-                )}
+                {meet.players.length?meet.players.map((player) => 
+                    <li className={style.infoItem} key={player.id}><NavLink to = {playersIdList?.includes(userId)?`/user/${player.id}/${player.role}`:`/user/${player.id}`}>@{player.userName}</NavLink></li>      
+                ):<li className={style.infoItem}>Участников пока нет(</li>}
             </ul>
-            <MeetButton meet = {meet} userId={userId} role= {role} />
+            <MeetButton meet = {meet} userId={userId} role= {role} url={url}/>
         </section>
     );
 }
