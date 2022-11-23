@@ -1,6 +1,6 @@
 import style from "./navbar.module.css";
 import { NavLink } from "react-router-dom";
-import { Logo, Search, User } from "../icons/icons";
+import { Exit, Logo, Search, User} from "../icons/icons";
 
 
 export const Navbar = ({user}) => {
@@ -8,9 +8,12 @@ export const Navbar = ({user}) => {
 
     if (user){
         buttonLink = 
+        <div className={style.buttons}>
             <NavLink to = {`user/${user.id}/${user.role}`} className = {style.profileButton}>
                 <User/>
             </NavLink> 
+            <button type ="button" className = {style.exitButton} ><Exit/></button>
+        </div>
             
     }
     
