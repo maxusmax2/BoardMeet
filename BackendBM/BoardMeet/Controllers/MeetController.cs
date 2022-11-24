@@ -40,9 +40,9 @@ namespace BoardMeet.Controllers
         {
 
             var meet = await _context.Meets
+            .Where(m => m.Id == id)
             .Include(m => m.Players)
             .Include(m => m.Author)
-            .Where(m => m.Id == id)
             .FirstOrDefaultAsync();
             
                 if (meet == null)
@@ -83,17 +83,22 @@ namespace BoardMeet.Controllers
         [HttpPost("JoinMeet/{meetId}/User/{userId}")]
         public async Task<IActionResult> JoinMeet(int meetId,int userId)
         {
-            User user = await _context.Users.FindAsync(userId);
+            User user = await _context.Users
+                .FindAsync(userId);
             if (user == null) 
             {
                 return NotFound();
             }
-            Meet meet = await _context.Meets.FindAsync(meetId);
+            Meet? meet = await _context.Meets
+                .Include(m => m.Players)
+                .Where(m => m.Id == meetId)
+                .FirstOrDefaultAsync(); 
             if (meet == null) 
             {
                 return NotFound();
             }
-            if (meet.Author.Id == userId) 
+            
+            if (meet.AuthorId == userId) 
             {
                 return BadRequest("Автор мероприятия не может быть участником");
             }
@@ -101,8 +106,9 @@ namespace BoardMeet.Controllers
             {
                 meet.Players = new List<User>();
             }
-            meet.PeopleCount++;
+            
             meet.Players.Add(user);
+            meet.PeopleCount++;
             await _context.SaveChangesAsync(true);
 
             return Ok();
@@ -111,12 +117,15 @@ namespace BoardMeet.Controllers
         [HttpDelete("ExitMeet/{meetId}/User/{userId}")]
         public async Task<IActionResult> ExitMeet(int meetId, int userId)
         {
-            User user = await _context.Users.FindAsync(userId);
+            User? user = await _context.Users.FindAsync(userId);
             if (user == null)
             {
                 return NotFound();
             }
-            Meet meet = await _context.Meets.FindAsync(meetId);
+            Meet? meet = await _context.Meets
+                .Include(m => m.Players)
+                .Where(m => m.Id == meetId)
+                .FirstOrDefaultAsync();
             if (meet == null)
             {
                 return NotFound();
@@ -125,8 +134,9 @@ namespace BoardMeet.Controllers
             {
                 meet.Players = new List<User>();
             }
-            meet.PeopleCount--;
+            
             meet.Players.Remove(user);
+            meet.PeopleCount--;
             await _context.SaveChangesAsync(true);
 
             return Ok();
@@ -137,7 +147,7 @@ namespace BoardMeet.Controllers
         [HttpDelete("{id}")]
         public async Task<StatusCodeResult> Delete(int id)
         {
-            Meet m = await _context.Meets.FindAsync(id);
+            Meet? m = await _context.Meets.FindAsync(id);
             if (m != null)
             {
                 _context.Meets.Attach(m);
