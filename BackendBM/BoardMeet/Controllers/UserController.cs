@@ -1,13 +1,11 @@
 ﻿using BoardMeet.Models;
 using BoardMeet.UserException;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
+
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
+
 using Microsoft.EntityFrameworkCore;
 using NuGet.Protocol;
-using System.Drawing.Drawing2D;
 
 namespace BoardMeet.Controllers
 {
@@ -34,28 +32,19 @@ namespace BoardMeet.Controllers
         [HttpPost("Authorize")]
         public async Task<IActionResult> AuthenticationUser([FromBody] AuthData auth)
         {
-            string token;
-            User AuthUser;
-           
-            try
+            AuthResponse respAuth;
+            try 
             {
-                AuthUser = await _context.Users.Where(x => x.Email == auth.Email).FirstOrDefaultAsync();
-                
-                if (AuthUser == null)
-                {
-                    throw new AuthenticateException("Юзера с таким именем нет");
-                }
-                token = jwtAuthenticationManager.Authenticate(AuthUser, auth.Password);
+                respAuth = await GetAuthResponse(auth);
             }
-            catch (AuthenticateException ex)
+            catch (AuthenticateException ex) 
             {
-                return Unauthorized(ex.Message);
+                return BadRequest(ex.Message);
             }
-            AuthResponse Response = new AuthResponse();
-            Response.token = token;
-            Response.AuthUser = AuthUser;
-            
-            return Ok(Response);
+            var resp = new HttpResponseMessage();
+            HttpContext.Response.Cookies.Append("token", respAuth.token);
+            HttpContext.Response.Cookies.Append("AuthUser",respAuth.AuthUser.ToJson());
+            return Ok(respAuth);
         }
 
         [AllowAnonymous]
@@ -64,7 +53,7 @@ namespace BoardMeet.Controllers
         {
             try
             { 
-                User UserExist = await _context.Users.FirstOrDefaultAsync(x => x.Email == registartionData.User.Email);
+                User? UserExist = await _context.Users.FirstOrDefaultAsync(x => x.Email == registartionData.User.Email);
                 if (UserExist != null) 
                 {
                     throw new RegistrationException("Юзер с таким мылом уже есть");
@@ -79,7 +68,24 @@ namespace BoardMeet.Controllers
             _context.Users.Add(registartionData.User);
             await _context.SaveChangesAsync();
 
-            return Ok(registartionData.User);
+            AuthResponse respAuth;
+            AuthData auth = new AuthData();
+            auth.Email = registartionData.User.Email;
+            auth.Password = registartionData.Password;
+
+            try
+            {
+                respAuth = await GetAuthResponse(auth);
+            }
+            catch (AuthenticateException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            var resp = new HttpResponseMessage();
+            HttpContext.Response.Cookies.Append("token", respAuth.token);
+            HttpContext.Response.Cookies.Append("AuthUser", respAuth.AuthUser.ToJson());
+            return Ok(respAuth);
+
         }
         [AllowAnonymous]
         [HttpGet("{id}")]
@@ -186,6 +192,24 @@ namespace BoardMeet.Controllers
             }
             return BadRequest();
            
+        }
+        private async Task<AuthResponse?> GetAuthResponse(AuthData auth) 
+        {
+            
+           
+            AuthResponse Response = new AuthResponse();
+
+            Response.AuthUser = await _context.Users.Where(x => x.Email == auth.Email).FirstOrDefaultAsync();
+
+            if (Response.AuthUser == null)
+            {
+                throw new AuthenticateException("Юзера с таким именем нет");
+            }
+            Response.token = jwtAuthenticationManager.Authenticate(Response.AuthUser, auth.Password);
+
+            Response.AuthUser.Password = null;
+
+            return Response;
         }
 
     }
