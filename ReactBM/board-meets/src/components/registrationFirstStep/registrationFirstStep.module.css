@@ -1,0 +1,86 @@
+
+.form{
+    width: 394px;
+    background: #FFFFFF;
+    box-shadow: 0px 5px 10px rgba(41, 41, 41, 0.08);
+    border-radius: 13px;
+    box-sizing: border-box;
+    padding: 51px 38px 21px 38px;
+}
+.formTitle{
+    display: block;
+    font-weight: 700;
+    font-size: 28px;
+    line-height: 100%;
+}
+.formInput{
+    position: relative;
+    margin-top: 30px;
+}
+.swimLabel{
+   position: absolute;
+   left:18px;
+   top:40px;
+   transition: 0.3s;
+   color: #909090;
+
+}
+.input{
+    transition:0.3s;
+    height: 56px;
+    width: 317px;
+    border: 1px solid #64C661;
+    border-radius: 10px;
+    box-sizing: border-box;
+    padding: 18px;
+    font-size: 16px;
+}
+.input:focus{
+   outline: 3px solid #64C661;
+}
+.input:focus ~ .swimLabel,
+.input:not(:placeholder-shown) ~ .swimLabel
+{
+    font-weight: 400;
+    font-size: 20px;
+    color:black;
+    top:-8px;
+    left:0;
+ }
+.mandatoryLabel{
+    color: #9F9F9F;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 100%;
+    float: right;
+    margin-bottom: 7px;
+    margin-right: 7px;
+
+}
+.formButton{
+    width: 317px;
+    height: 46px;
+    background: #292929;
+    border-radius: 8px;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 100%;
+    color: #FFFFFF;
+    margin-top: 25px;
+    border:0;
+}
+.formButton:active{
+   
+    background: #1d1d1d;
+    
+}
+.navLink{
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 100%;
+}
+.links{
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
