@@ -32,14 +32,14 @@ export const MeetMoreInfo = ({meet, userId,role,url}) => {
             </ul>
             <div className={style.horisontLine}/>
             <ul className={style.gamesList}>
-                <li className={style.infoItem}> <p className={style.infoTitle}>Games:</p></li>
+                <li className={style.infoItem}> <p className={style.infoTitle}>Игры:</p></li>
                 {gameList?.length&&gameList.map((game) => 
                     <li className={style.gamesListItem}>{game}</li>      
                 )}
             </ul>
             <div className={style.horisontLine}/>
             <ul className={style.otherInfoList}>
-            <li className={style.infoItem}> <p className={style.infoTitle}>Participants:</p></li>
+            <li className={style.infoItem}> <p className={style.infoTitle}>Участники:</p></li>
                 {meet.players.length?meet.players.map((player) => 
                     <li className={style.infoItem} key={player.id}><NavLink to = {playersIdList?.includes(userId)?`/user/${player.id}/${player.role}`:`/user/${player.id}`}>@{player.userName}</NavLink></li>      
                 ):<li className={style.infoItem}>Участников пока нет(</li>}

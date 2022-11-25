@@ -13,7 +13,7 @@ export const Filter = () => {
                 </div>
                 <InputDate/>
             </div>
-            <input type="button" value="Reset" className={style.button}></input>
+            <input type="button" value="Найти" className={style.button}></input>
         </form>
     );
 }

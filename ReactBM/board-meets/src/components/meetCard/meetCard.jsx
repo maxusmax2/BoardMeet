@@ -8,7 +8,7 @@ export const MeetCard = ({meet,url,userId,role}) => {
 
     let moreInfoSection = null;
     if (moreInfo){
-        moreInfoSection = <MeetMoreInfo  meet={meet} userId={userId} url={url}/>;
+        moreInfoSection = <MeetMoreInfo  meet={meet} userId={userId} url={url} role={role}/>;
     }
     
     const moreInfoHandler = () => {
@@ -18,7 +18,7 @@ export const MeetCard = ({meet,url,userId,role}) => {
     return(
         <>
             <div className={style.container}>
-                <MeetMainInfo moreInfoHandler={moreInfoHandler} url={url} meet={meet} role={role}/>
+                <MeetMainInfo moreInfoHandler={moreInfoHandler} url={url} meet={meet} />
                 {moreInfoSection}
             </div>
         </>
