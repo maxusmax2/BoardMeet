@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { Route, Routes } from "react-router-dom";
 import { MainLayout } from "./layouts/mainLayout/mainLayout";
-import { GamesList } from "./pages/gamesList/meetsList";
 import { LogIn } from "./pages/logIn/logIn";
 import { MeetsList } from "./pages/meetsList/meetsList";
 import { UserPageLayout } from "./layouts/userPageLayout/userPageLayout.jsx";
@@ -11,6 +10,10 @@ import { NotFoundPage } from "./pages/notFoundPage/notFoundPage";
 import { CreateMeetPage } from "./pages/createMeetPage/createMeetPage";
 import { Registration } from "./pages/registration/registration";
 import Cookies from 'universal-cookie';
+import { ChangeMeetPage } from "./pages/changeMeetPage/changeMeetPage";
+import { GameCard } from "./components/gameCard/gameCard";
+import { GameList } from "./pages/gamesList/gamesList";
+import { GamePage } from "./pages/gamePage/gamePage";
 
 export const App = () => {
   
@@ -40,10 +43,11 @@ export const App = () => {
       <Routes>
         <Route path="/" exact element={<MainLayout user = {user} exitHandler={exitHandler}/>}>
           <Route path="/" element={<MeetsList userId = {user?.id} url = {url} role = {user?.role}/>}/>
-          <Route path="/games" element={<GamesList/>}/>
+          <Route path="/games" element={<GameList/>}/>
+          <Route path="/game/:gameId" element={<GamePage/>}/>
           <Route path="/user/:userId" element={<UserPageLayout url = {url}/>}>
             <Route path="createMeet" element={<CreateMeetPage url ={url}/>}/>
-            <Route path="changeMeet/:meetId" element={<MeetsList/>}/>
+            <Route path="changeMeet/:meetId" element={<ChangeMeetPage url={url}/>}/>
             <Route path="player" element={<PlayerPage url = {url} />}/>
             <Route path="organization" element={<OrganizationPage url = {url} />}/>
             <Route path="publisher" element={<MeetsList/>}/>
