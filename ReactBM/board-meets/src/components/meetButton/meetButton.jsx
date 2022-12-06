@@ -7,8 +7,6 @@ export const MeetButton = ({ userId, role, meet, url }) => {
     userId=parseInt(userId);
     const navigate = useNavigate();
     let playersIdList = meet.players.length && meet.players.map((player) => player.id);
-    console.log(playersIdList);
-    
     let typeMeet = userId !=null ? "NotJoined":null;
     if (playersIdList){
         if(playersIdList.includes(userId)){
@@ -58,7 +56,7 @@ export const MeetButton = ({ userId, role, meet, url }) => {
             });
     }
     const joinHander = () => {
-        axios.post(url + `Meet/JoinMeet/${meet.id}/User/${userId}`, getConfig())
+        axios.post(url + `Meet/JoinMeet/${meet.id}/User/${userId}`,{}, getConfig())
             .then((response) => {
                 console.log(response.data);
             })
