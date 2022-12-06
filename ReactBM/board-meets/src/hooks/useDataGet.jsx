@@ -10,7 +10,5 @@ export const useDataGet = (url) => {
         .catch((er)=>console.log(er))
       
       }, [url]);
-        
-    
     return data 
 };

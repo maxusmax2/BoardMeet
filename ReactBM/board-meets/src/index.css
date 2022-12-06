@@ -25,3 +25,7 @@ a {
   margin-left: 4px;
   margin-top: 4px;
 }
+.error::before{
+  content:"➜";
+  margin-right: 5px;
+}

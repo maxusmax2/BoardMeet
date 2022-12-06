@@ -17,17 +17,10 @@ export const LogIn = ({buttonHandler,url}) => {
         })
         .then(()=>navigate("/"))
         .catch((err) => {
-            if (err.response) { 
-                console.log("a");
-            } 
-            else if (err.request) { 
-                console.log("b");
-            } 
-            else { 
-                console.log("c");
-            } 
+            if (err.response) { console.log("a");} 
+            else if (err.request) { console.log("b");} 
+            else { console.log("c");} 
         });
-
     };
 
     return(

@@ -9,7 +9,7 @@ import { RegistrationSecondStep } from "../../components/registrationSecondStep 
 import { getConfig } from "../../helpers/getConfig";
 
 
-export const Registration = ({ url ,buttonHandler}) => {
+export const Registration = ({ url, buttonHandler }) => {
 
     const { register, watch, handleSubmit, formState: { errors } } = useForm();
     const [regStep, setRegStep] = useState("firstStep");
@@ -26,20 +26,20 @@ export const Registration = ({ url ,buttonHandler}) => {
     const onSubmit = (data) => {
         console.log(data);
         const body = {
-        user:{
-            email: data.email,
-            userName: data.nickname,
-            name: data.name + " " + data.surname,
-            role: data.role,
-            city: data.city,
-            aboutMe: data.aboutMe,
+            user: {
+                email: data.email,
+                userName: data.nickname,
+                name: data.name + " " + data.surname,
+                role: data.role,
+                city: data.city,
+                aboutMe: data.aboutMe,
             },
             password: data.password
         }
 
         axios.post(url + `User/Registration`, body)
             .then((response) => {
-                buttonHandler(response.data.authUser,response.data.token);
+                buttonHandler(response.data.authUser, response.data.token);
                 navigate(`/user/${response.data.authUser.id}/${response.data.authUser.role}`);
             })
             .catch((err) => {
@@ -67,9 +67,9 @@ export const Registration = ({ url ,buttonHandler}) => {
                     <p className={style.mainTitle}>Board Meets</p>
                     <p className={style.subTitle}>for your fun)</p>
                 </div>
-                <div className={style.formContainer}>
-                    {form}
-                </div>
+
+                {form}
+
             </div>
         </div>
 

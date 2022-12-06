@@ -77,7 +77,7 @@ export const RegistrationSecondStep = ({register,handleSubmit,onSubmit,secondSte
                 
                 <input type="submit" className={style.formButton} value="Зарегистрироваться"></input>
                 <div className={style.links}> 
-                    <input type="button" value="Обратно" onClick = {secondStepHandler}></input>
+                    <button type="button" className={style.backButton} onClick = {secondStepHandler}><Back/>Обратно</button>
                     <NavLink to="/" className={style.navLink}><Back/>Продолжить без регистрации</NavLink>
                 </div>
             </form>
