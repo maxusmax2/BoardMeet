@@ -11,7 +11,9 @@
         public int BestPlayerMax { get; set; }
         public int AgePlayer { get; set; }
 
-        public User Author { get; set; }
-        public BoardGame Game { get; set; }
+        public User? Author { get; set; }
+        public int AuthorId { get; set; }
+        public BoardGame? Game { get; set; }
+        public int GameId { get; set; }
     }
 }

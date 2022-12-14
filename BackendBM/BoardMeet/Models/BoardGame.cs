@@ -2,6 +2,7 @@
 {
     public class BoardGame : BaseEntity
     {
+        
         public string Name { get; set; }
         public float RangeOfPlayersMin { get; set; }
         public float RangeOfPlayersMax { get; set; }

@@ -1,6 +1,8 @@
 ﻿using BoardMeet.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Xml.Linq;
+using System;
 
 namespace BoardMeet.Controllers
 {
@@ -42,15 +44,23 @@ namespace BoardMeet.Controllers
 
         // PUT: api/BoardGames/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutBoardGame(int id, BoardGame boardGame)
+        public async Task<IActionResult> PutBoardGame(int id, BoardGameCreateDto boardGameChanged)
         {
-            if (id != boardGame.Id)
+            BoardGame boardGame = await _context.BoardGames.FirstAsync(x => x.Id == id);
+            if (boardGame == null)
             {
                 return BadRequest();
             }
 
+            boardGame.Name = boardGameChanged.Name;
+            boardGame.RangeOfPlayersMax = boardGameChanged.RangeOfPlayersMax;
+            boardGame.RangeOfPlayersMin = boardGameChanged.RangeOfPlayersMin;
+            boardGame.GameTime = boardGameChanged.GameTime;
+            boardGame.Description = boardGameChanged.Description;
+            boardGame.AgePlayer = boardGameChanged.AgePlayer;
+            
             _context.Entry(boardGame).State = EntityState.Modified;
-
+            
             try
             {
                 await _context.SaveChangesAsync();
@@ -72,7 +82,7 @@ namespace BoardMeet.Controllers
 
 
         [HttpPost]
-        public async Task<ActionResult<BoardGame>> PostBoardGame(IFormFile rule, IFormFile avatarGame, BoardGameCreateDto boardGameData)
+        public async Task<ActionResult<BoardGame>> PostBoardGame([FromForm] BoardGameCreateDto boardGameData, IFormFile rule, IFormFile avatarGame)
         {
 
             
@@ -97,7 +107,7 @@ namespace BoardMeet.Controllers
             string filetypeRule;
             if (rule.ContentType != null)
             {
-                if (!(avatarGame.ContentType[0..15] == "application/pdf"))
+                if (!(rule.ContentType[0..15] == "application/pdf"))
                 {
                     return BadRequest("Не PDF Файл");
                 }
@@ -155,8 +165,9 @@ namespace BoardMeet.Controllers
 
             _context.BoardGames.Add(boardGame);
             await _context.SaveChangesAsync();
-
+            
             return CreatedAtAction("GetBoardGame", new { id = boardGame.Id }, boardGame);
+            
         }
 
         [HttpDelete("{id}")]
@@ -175,7 +186,7 @@ namespace BoardMeet.Controllers
         }
 
         [HttpPost("CreateComment")]
-        public async Task<ActionResult<Comment>> PostComment(int id, Comment comment)
+        public async Task<ActionResult<Comment>> PostComment(Comment comment)
         {
             _context.Comments.Add(comment);
 
@@ -209,9 +220,9 @@ namespace BoardMeet.Controllers
             return Ok(searchBG);
 
         }
-        private void AddRaitingData(Comment comment)
+        private async void AddRaitingData(Comment comment)
         {
-            BoardGame commentGame = comment.Game;
+            BoardGame commentGame = await _context.BoardGames.FindAsync(comment.GameId);
             commentGame.RatingUser = (commentGame.RatingUser * commentGame.СountComment + comment.Rating) / (commentGame.СountComment + 1);
             commentGame.WeightGameUser = (commentGame.WeightGameUser * commentGame.СountComment + comment.WeightGame) / (commentGame.СountComment + 1);
             commentGame.AgePlayerUser = (commentGame.AgePlayerUser * commentGame.СountComment + comment.AgePlayer) / (commentGame.СountComment + 1);
@@ -221,9 +232,14 @@ namespace BoardMeet.Controllers
             commentGame.СountComment++;
         }
 
-        private void RemoveRaitingData(Comment comment)
+        private async void RemoveRaitingData(Comment comment)
         {
-            BoardGame commentGame = comment.Game;
+            BoardGame commentGame = await _context.BoardGames.FindAsync(comment.GameId);
+            if(commentGame.СountComment <= 1) 
+            {
+                commentGame.СountComment--;
+                return;
+            }
             commentGame.RatingUser = (commentGame.RatingUser * commentGame.СountComment - comment.Rating) / (commentGame.СountComment - 1);
             commentGame.WeightGameUser = (commentGame.WeightGameUser * commentGame.СountComment - comment.WeightGame) / (commentGame.СountComment - 1);
             commentGame.AgePlayerUser = (commentGame.AgePlayerUser * commentGame.СountComment - comment.AgePlayer) / (commentGame.СountComment - 1);

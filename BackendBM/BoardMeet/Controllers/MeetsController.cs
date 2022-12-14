@@ -85,7 +85,7 @@ namespace BoardMeet.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!MeetExists(EditMeet.Id))
+                    if (!MeetExists((int)EditMeet.Id))
                     {
                         return NotFound();
                     }
