@@ -1,85 +1,76 @@
-﻿/*using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using BoardMeet.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using BoardMeet;
-using BoardMeet.Models;
 
 namespace BoardMeet.Controllers
 {
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     [ApiController]
     public class MeetsController : ControllerBase
     {
-        private readonly ApplicationContext _context;
 
-        public MeetsController(ApplicationContext context)
+        private readonly ApplicationContext _context;
+        private readonly IWebHostEnvironment _appEnvironment;
+        public MeetsController(ApplicationContext context, IWebHostEnvironment appEnvironment)
         {
             _context = context;
+            _appEnvironment = appEnvironment;
         }
-
-        public async Task<IActionResult> Index()
+        // GET: api/<MeetController>
+        [HttpGet]
+        public async Task<IActionResult> Get()
         {
-              return Ok(await _context.Meets.ToListAsync());
-        }
-
-        // GET: Meets/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null || _context.Meets == null)
+            List<Meet> meet = await _context.Meets
+            .Include(m => m.Players)
+            .Include(m => m.Author)
+                .ToListAsync();
+            if (meet == null)
             {
                 return NotFound();
             }
+
+            return Ok(meet);
+
+        }
+
+        // GET api/<MeetController>/5
+        [HttpGet("{id}")]
+        public async Task<IActionResult> Get(int id)
+        {
 
             var meet = await _context.Meets
-                .FirstOrDefaultAsync(m => m.Id == id);
+            .Where(m => m.Id == id)
+            .Include(m => m.Players)
+            .Include(m => m.Author)
+            .FirstOrDefaultAsync();
+
             if (meet == null)
             {
                 return NotFound();
             }
 
             return Ok(meet);
-        }
 
-        [HttpPost("Create")]
-        //[ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Name,PeopleCount,DurationMin,DurationMax,Date,Location,Games,Link,Id")] Meet meet)
+        }
+        // POST api/<MeetController>
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> Create([FromBody] Meet meet)
         {
-            if (ModelState.IsValid)
-            {
-                _context.Add(meet);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
+
+            await _context.Meets.AddAsync(meet);
+
+            await _context.SaveChangesAsync(true);
             return Ok(meet);
         }
 
-        // GET: Meets/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        // POST api/<MeetController>
+        [HttpPut("{id}")]
+        [Authorize]
+        public async Task<IActionResult> Edit([FromBody] Meet EditMeet, int id)
         {
-            if (id == null || _context.Meets == null)
-            {
-                return NotFound();
-            }
-
-            var meet = await _context.Meets.FindAsync(id);
-            if (meet == null)
-            {
-                return NotFound();
-            }
-            return Ok(meet);
-        }
-
-        // POST: Meets/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost("Edit/{id}")]
-        //[ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Name,PeopleCount,DurationMin,DurationMax,Date,Location,Games,Link,Id")] Meet meet)
-        {
-            if (id != meet.Id)
+            if (id != EditMeet.Id)
             {
                 return NotFound();
             }
@@ -88,12 +79,13 @@ namespace BoardMeet.Controllers
             {
                 try
                 {
-                    _context.A(meet);
+                    _context.Meets.Update(EditMeet);
                     await _context.SaveChangesAsync();
+
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!MeetExists(meet.Id))
+                    if (!MeetExists(EditMeet.Id))
                     {
                         return NotFound();
                     }
@@ -102,52 +94,134 @@ namespace BoardMeet.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return Ok(EditMeet);
             }
-            return Ok(meet);
+            return Ok(EditMeet);
         }
 
-        // GET: Meets/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        // POST api/<MeetController>
+        [HttpPost("JoinMeet/{meetId}/User/{userId}")]
+        [Authorize]
+        public async Task<IActionResult> JoinMeet(int meetId, int userId)
         {
-            if (id == null || _context.Meets == null)
+            User user = await _context.Users
+                .FindAsync(userId);
+            if (user == null)
             {
                 return NotFound();
             }
-
-            var meet = await _context.Meets
-                .FirstOrDefaultAsync(m => m.Id == id);
+            Meet? meet = await _context.Meets
+                .Include(m => m.Players)
+                .Where(m => m.Id == meetId)
+                .FirstOrDefaultAsync();
             if (meet == null)
             {
                 return NotFound();
             }
 
-            return Ok(meet);
+            if (meet.AuthorId == userId)
+            {
+                return BadRequest("Автор мероприятия не может быть участником");
+            }
+            if (meet.Players == null)
+            {
+                meet.Players = new List<User>();
+            }
+
+            meet.Players.Add(user);
+            meet.PeopleCount++;
+            await _context.SaveChangesAsync(true);
+
+            return Ok();
+
+        }
+        [HttpDelete("ExitMeet/{meetId}/User/{userId}")]
+        [Authorize]
+        public async Task<IActionResult> ExitMeet(int meetId, int userId)
+        {
+            User? user = await _context.Users.FindAsync(userId);
+            if (user == null)
+            {
+                return NotFound();
+            }
+            Meet? meet = await _context.Meets
+                .Include(m => m.Players)
+                .Where(m => m.Id == meetId)
+                .FirstOrDefaultAsync();
+            if (meet == null)
+            {
+                return NotFound();
+            }
+            if (meet.Players == null)
+            {
+                meet.Players = new List<User>();
+            }
+
+            meet.Players.Remove(user);
+            meet.PeopleCount--;
+            await _context.SaveChangesAsync(true);
+
+            return Ok();
+
         }
 
-        // POST: Meets/Delete/5
-        [HttpPost("Delete")]
-        //[ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        // DELETE api/<MeetController>/5
+        [HttpDelete("{id}")]
+        [Authorize]
+        public async Task<StatusCodeResult> Delete(int id)
         {
-            if (_context.Meets == null)
+            Meet? m = await _context.Meets.FindAsync(id);
+            if (m != null)
             {
-                return Problem("Entity set 'ApplicationContext.Meets'  is null.");
+                _context.Meets.Attach(m);
+                _context.Meets.Remove(m);
+                await _context.SaveChangesAsync(true);
+                return StatusCode(200);
             }
-            var meet = await _context.Meets.FindAsync(id);
-            if (meet != null)
-            {
-                _context.Meets.Remove(meet);
-            }
-            
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return BadRequest();
         }
+        [HttpGet("Search")]
+        public async Task<IActionResult> SearchMeet(SearchValMeet searchValue)
+        {
+            List<Meet> searchMeet = null;
+            if (searchValue.City == null && searchValue.Date != null)
+            {
+                DateTime searchDate = ((DateTime)searchValue.Date).Date;
+                searchMeet = await _context.Meets
+                    .Where(m => m.Date.Date == searchDate)
+                    .Include(m => m.Players)
+                    .Include(m => m.Author)
+                    .ToListAsync();
+            }
+            else if (searchValue.Date == null && searchValue.City != null)
+            {
+                searchMeet = await _context.Meets
+                    .Where(m => m.City == searchValue.City)
+                    .Include(m => m.Players)
+                    .Include(m => m.Author)
+                    .ToListAsync();
+            }
+            else if (searchValue.Date == null && searchValue.City == null)
+            {
+                return BadRequest("Нет данных для поиска");
+            }
+            else
+            {
+                DateTime searchDate = ((DateTime)searchValue.Date).Date;
+                searchMeet = await _context.Meets
+                    .Where(m => m.City == searchValue.City)
+                    .Where(m => m.Date.Date == searchDate)
+                    .Include(m => m.Players)
+                    .Include(m => m.Author)
+                    .ToListAsync();
+            }
+            return Ok(searchMeet);
+        }
+        [HttpGet("SearchDate/{Date}")]
 
         private bool MeetExists(int id)
         {
-          return _context.Meets.Any(e => e.Id == id);
+            return _context.Meets.Any(e => e.Id == id);
         }
     }
 }
-*/

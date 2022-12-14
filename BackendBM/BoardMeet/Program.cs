@@ -1,14 +1,9 @@
 using BoardMeet;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Cors;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.FileProviders;
-using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using System.Configuration;
 using System.Text;
 using System.Text.Json.Serialization;
 
@@ -21,7 +16,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("corspolicy",builder =>
+    options.AddPolicy("corspolicy", builder =>
                       {
                           builder.WithOrigins("*").AllowAnyMethod().AllowAnyHeader();
                       });
@@ -68,6 +63,8 @@ builder.Services.AddDbContext<ApplicationContext>(options =>
 
 });
 
+builder.Configuration.AddJsonFile("appsettings.json");
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -78,11 +75,17 @@ if (app.Environment.IsDevelopment())
 }
 app.UseCors("corspolicy");
 
-app.UseStaticFiles(new StaticFileOptions() // обрабатывает запросы к каталогу wwwroot/html
+/*app.UseStaticFiles(new StaticFileOptions() // обрабатывает запросы к каталогу wwwroot/html
 {
     FileProvider = new PhysicalFileProvider(
             Path.Combine("C:\\Users\\maxus\\OneDrive\\images", "" )),
     RequestPath = new PathString("/api/images")
+});*/
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(
+           Path.Combine(builder.Environment.ContentRootPath, "wwwroot")),
+    RequestPath = "/api"
 });
 app.UseAuthentication();
 app.UseAuthorization();

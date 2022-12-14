@@ -1,7 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System.Text.Json;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Xml;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 
 namespace BoardMeet.Models
@@ -23,9 +20,6 @@ namespace BoardMeet.Models
 
         [InverseProperty("Author")]
         public virtual List<Meet>? CreatedMeets { get; set; }
-        
-       
-      
 
     }
 }

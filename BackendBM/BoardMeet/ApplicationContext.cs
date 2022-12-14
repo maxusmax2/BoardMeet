@@ -11,9 +11,7 @@ namespace BoardMeet
         public DbSet<Comment> Comments { get; set; }
         public ApplicationContext(DbContextOptions<ApplicationContext> options) : base(options)
         {
-            //Database.EnsureDeleted();//Не на релиз!!!!!!!!!!!!!!!!!!!
-           
-            //this.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
+            //Database.EnsureDeleted();//Не на релиз
             Database.EnsureCreated();
 
         }

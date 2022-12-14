@@ -1,30 +1,33 @@
-﻿using BoardMeet.Models;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using BoardMeet;
+using BoardMeet.Models;
 using BoardMeet.UserException;
 using Microsoft.AspNetCore.Authorization;
-
-using Microsoft.AspNetCore.Mvc;
-
-using Microsoft.EntityFrameworkCore;
 using NuGet.Protocol;
 
 namespace BoardMeet.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UserController : ControllerBase
+    public class UsersController : ControllerBase
     {
-
         private readonly JwtAuthenticationManager jwtAuthenticationManager;
         private readonly RegistrationManager registrationManager;
         private readonly ApplicationContext _context;
-        private IWebHostEnvironment _hostingEnvironment;
+        private readonly IWebHostEnvironment _appEnvironment;
 
-        public UserController(JwtAuthenticationManager jwtAuthenticationManager, RegistrationManager registrationManager, ApplicationContext context, IWebHostEnvironment environment)
+        public UsersController(JwtAuthenticationManager jwtAuthenticationManager, RegistrationManager registrationManager, ApplicationContext context, IWebHostEnvironment appEnvironment)
         {
             _context = context;
             this.jwtAuthenticationManager = jwtAuthenticationManager;
             this.registrationManager = registrationManager;
-            _hostingEnvironment = environment;
+            _appEnvironment = appEnvironment;
         }
 
 
@@ -33,17 +36,17 @@ namespace BoardMeet.Controllers
         public async Task<IActionResult> AuthenticationUser([FromBody] AuthData auth)
         {
             AuthResponse respAuth;
-            try 
+            try
             {
                 respAuth = await GetAuthResponse(auth);
             }
-            catch (AuthenticateException ex) 
+            catch (AuthenticateException ex)
             {
                 return BadRequest(ex.Message);
             }
             var resp = new HttpResponseMessage();
             HttpContext.Response.Cookies.Append("token", respAuth.token);
-            HttpContext.Response.Cookies.Append("AuthUser",respAuth.AuthUser.ToJson());
+            HttpContext.Response.Cookies.Append("AuthUser", respAuth.AuthUser.ToJson());
             return Ok(respAuth);
         }
 
@@ -52,9 +55,9 @@ namespace BoardMeet.Controllers
         public async Task<IActionResult> RegistrationUser([FromBody] RegistartionData registartionData)
         {
             try
-            { 
+            {
                 User? UserExist = await _context.Users.FirstOrDefaultAsync(x => x.Email == registartionData.User.Email);
-                if (UserExist != null) 
+                if (UserExist != null)
                 {
                     throw new RegistrationException("Юзер с таким мылом уже есть");
                 }
@@ -94,7 +97,7 @@ namespace BoardMeet.Controllers
             var user = await _context.Users
             .Where(u => u.Id == id)
             .FirstOrDefaultAsync();
-            if(user == null)
+            if (user == null)
             {
                 return NotFound();
             }
@@ -103,6 +106,7 @@ namespace BoardMeet.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize]
         public async Task<StatusCodeResult> Delete(int id)
         {
             var u = await _context.Users.FindAsync(id);
@@ -116,7 +120,7 @@ namespace BoardMeet.Controllers
             return BadRequest();
         }
 
-        
+
         [AllowAnonymous]
         [HttpGet("JoinedMeet/{id}")]
         public async Task<IActionResult> GetJoinedMeet(int id)
@@ -156,19 +160,20 @@ namespace BoardMeet.Controllers
             return Ok(user.CreatedMeets);
         }
         [HttpPost("SaveAvatar/{id}")]
-        public async Task<IActionResult> SaveAvatar(IFormFile file, int id) 
+        //[Authorize]
+        public async Task<IActionResult> SaveAvatar(IFormFile file, int id)
         {
             string filePath;
             string filetype;
-            string uploads = Path.Combine("C:\\Users\\maxus\\OneDrive\\images", "");
-            if(file.ContentType != null)
-            { 
 
-                if (file.ContentType[0..6]  == "image/")
+            if (file.ContentType != null)
+            {
+
+                if (file.ContentType[0..6] == "image/")
                 {
-                    filetype = "."+file.ContentType[6..file.ContentType.Length];
+                    filetype = "." + file.ContentType[6..file.ContentType.Length];
                 }
-                else 
+                else
                 {
                     return BadRequest("Файл не картинка");
                 }
@@ -180,23 +185,22 @@ namespace BoardMeet.Controllers
             var FileNameUnique = System.Guid.NewGuid().ToString() + filetype;
             if (file.Length > 0)
             {
-                filePath = Path.Combine(uploads, FileNameUnique);
+                filePath = Path.Combine(_appEnvironment.WebRootPath + "/static/Meet/avatar", FileNameUnique);
                 using (Stream fileStream = new FileStream(filePath, FileMode.Create))
                 {
                     await file.CopyToAsync(fileStream);
                 }
                 User user = await _context.Users.FirstAsync(u => u.Id == id);
-                user.AvatarUrl = "images/" + FileNameUnique;
+                user.AvatarUrl = "static/Meet/avatar/" + FileNameUnique;
                 await _context.SaveChangesAsync();
                 return Ok(file);
             }
             return BadRequest();
-           
+
         }
-        private async Task<AuthResponse?> GetAuthResponse(AuthData auth) 
+        private async Task<AuthResponse?> GetAuthResponse(AuthData auth)
         {
-            
-           
+
             AuthResponse Response = new AuthResponse();
 
             Response.AuthUser = await _context.Users.Where(x => x.Email == auth.Email).FirstOrDefaultAsync();
@@ -211,6 +215,5 @@ namespace BoardMeet.Controllers
 
             return Response;
         }
-
     }
 }
