@@ -75,12 +75,6 @@ if (app.Environment.IsDevelopment())
 }
 app.UseCors("corspolicy");
 
-/*app.UseStaticFiles(new StaticFileOptions() // обрабатывает запросы к каталогу wwwroot/html
-{
-    FileProvider = new PhysicalFileProvider(
-            Path.Combine("C:\\Users\\maxus\\OneDrive\\images", "" )),
-    RequestPath = new PathString("/api/images")
-});*/
 app.UseStaticFiles(new StaticFileOptions
 {
     FileProvider = new PhysicalFileProvider(

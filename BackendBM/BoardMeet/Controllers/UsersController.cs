@@ -10,6 +10,8 @@ using BoardMeet.Models;
 using BoardMeet.UserException;
 using Microsoft.AspNetCore.Authorization;
 using NuGet.Protocol;
+using System.Security.Claims;
+using NuGet.Versioning;
 
 namespace BoardMeet.Controllers
 {
@@ -29,7 +31,6 @@ namespace BoardMeet.Controllers
             this.registrationManager = registrationManager;
             _appEnvironment = appEnvironment;
         }
-
 
         [AllowAnonymous]
         [HttpPost("Authorize")]
@@ -52,28 +53,30 @@ namespace BoardMeet.Controllers
 
         [AllowAnonymous]
         [HttpPost("Registration")]
-        public async Task<IActionResult> RegistrationUser([FromBody] RegistartionData registartionData)
+        public async Task<IActionResult> RegistrationUser([FromForm] RegistartionData registartionData)
         {
+            
             try
             {
-                User? UserExist = await _context.Users.FirstOrDefaultAsync(x => x.Email == registartionData.User.Email);
-                if (UserExist != null)
+                if (await _context.Users.FirstOrDefaultAsync(x => x.Email == registartionData.user.Email) != null)
                 {
                     throw new RegistrationException("Юзер с таким мылом уже есть");
                 }
-                registartionData.User = registrationManager.Registration(registartionData.User, registartionData.Password);
+                
             }
             catch (RegistrationException ex)
             {
                 return BadRequest(ex.Message);
             }
-            registartionData.User.AvatarUrl = "images/default.png";
-            _context.Users.Add(registartionData.User);
+            User user = new User(registartionData.user);
+            registrationManager.Registration(user, registartionData.Password);
+
+            _context.Users.Add(user);
             await _context.SaveChangesAsync();
 
             AuthResponse respAuth;
             AuthData auth = new AuthData();
-            auth.Email = registartionData.User.Email;
+            auth.Email = user.Email;
             auth.Password = registartionData.Password;
 
             try
@@ -88,15 +91,17 @@ namespace BoardMeet.Controllers
             HttpContext.Response.Cookies.Append("token", respAuth.token);
             HttpContext.Response.Cookies.Append("AuthUser", respAuth.AuthUser.ToJson());
             return Ok(respAuth);
-
         }
+
         [AllowAnonymous]
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
             var user = await _context.Users
-            .Where(u => u.Id == id)
-            .FirstOrDefaultAsync();
+                .Where(u => u.Id == id)
+                .Include(u => u.CreateBoardGames)
+                .FirstOrDefaultAsync();
+
             if (user == null)
             {
                 return NotFound();
@@ -109,11 +114,12 @@ namespace BoardMeet.Controllers
         [Authorize]
         public async Task<StatusCodeResult> Delete(int id)
         {
-            var u = await _context.Users.FindAsync(id);
-            if (u != null)
+            Utils.AccessVerification(id, HttpContext.User.Identity as ClaimsIdentity);
+            var user = await _context.Users.FindAsync(id);
+            if (user != null)
             {
-                _context.Users.Attach(u);
-                _context.Users.Remove(u);
+                _context.Users.Attach(user);
+                _context.Users.Remove(user);
                 await _context.SaveChangesAsync(true);
                 return StatusCode(200);
             }
@@ -126,12 +132,12 @@ namespace BoardMeet.Controllers
         public async Task<IActionResult> GetJoinedMeet(int id)
         {
             var user = await _context.Users
-            .Include(u => u.JoinedMeets)
-            .ThenInclude(u => u.Players)
-            .Include(u => u.JoinedMeets)
-            .ThenInclude(u => u.Author)
-            .Where(u => u.Id == id)
-            .FirstOrDefaultAsync();
+                .Include(u => u.JoinedMeets)
+                .ThenInclude(u => u.Players)
+                .Include(u => u.JoinedMeets)
+                .ThenInclude(u => u.Author)
+                .Where(u => u.Id == id)
+                .FirstOrDefaultAsync();
             if (user == null)
             {
                 return NotFound();
@@ -160,9 +166,10 @@ namespace BoardMeet.Controllers
             return Ok(user.CreatedMeets);
         }
         [HttpPost("SaveAvatar/{id}")]
-        //[Authorize]
+        [Authorize]
         public async Task<IActionResult> SaveAvatar(IFormFile file, int id)
         {
+            Utils.AccessVerification(id, HttpContext.User.Identity as ClaimsIdentity);
             string filePath;
             string filetype;
 
@@ -185,13 +192,13 @@ namespace BoardMeet.Controllers
             var FileNameUnique = System.Guid.NewGuid().ToString() + filetype;
             if (file.Length > 0)
             {
-                filePath = Path.Combine(_appEnvironment.WebRootPath + "/static/Meet/avatar", FileNameUnique);
+                filePath = Path.Combine(_appEnvironment.WebRootPath + "/static/User/avatar", FileNameUnique);
                 using (Stream fileStream = new FileStream(filePath, FileMode.Create))
                 {
                     await file.CopyToAsync(fileStream);
                 }
                 User user = await _context.Users.FirstAsync(u => u.Id == id);
-                user.AvatarUrl = "static/Meet/avatar/" + FileNameUnique;
+                user.AvatarUrl = "static/User/avatar/" + FileNameUnique;
                 await _context.SaveChangesAsync();
                 return Ok(file);
             }
@@ -215,5 +222,6 @@ namespace BoardMeet.Controllers
 
             return Response;
         }
+        
     }
 }

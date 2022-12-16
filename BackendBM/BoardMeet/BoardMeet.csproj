@@ -27,7 +27,6 @@
   <ItemGroup>
     <Folder Include="wwwroot\static\BoardGame\rule\" />
     <Folder Include="wwwroot\static\BoardGame\images\" />
-    <Folder Include="wwwroot\static\Meet\avatar\" />
   </ItemGroup>
 
 </Project>

@@ -44,23 +44,18 @@ namespace BoardMeet.Controllers
 
         // PUT: api/BoardGames/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutBoardGame(int id, BoardGameCreateDto boardGameChanged)
+        public async Task<IActionResult> PutBoardGame(int id, BoardGameChangeDTO boardGame)
         {
-            BoardGame boardGame = await _context.BoardGames.FirstAsync(x => x.Id == id);
-            if (boardGame == null)
+            BoardGame boardGameChange = await _context.BoardGames.FirstAsync(x => x.Id == id);
+            if (boardGameChange == null)
             {
                 return BadRequest();
             }
+            boardGameChange.Change(boardGame);
 
-            boardGame.Name = boardGameChanged.Name;
-            boardGame.RangeOfPlayersMax = boardGameChanged.RangeOfPlayersMax;
-            boardGame.RangeOfPlayersMin = boardGameChanged.RangeOfPlayersMin;
-            boardGame.GameTime = boardGameChanged.GameTime;
-            boardGame.Description = boardGameChanged.Description;
-            boardGame.AgePlayer = boardGameChanged.AgePlayer;
-            
-            _context.Entry(boardGame).State = EntityState.Modified;
-            
+
+            _context.Entry(boardGameChange).State = EntityState.Modified;
+
             try
             {
                 await _context.SaveChangesAsync();
@@ -82,17 +77,15 @@ namespace BoardMeet.Controllers
 
 
         [HttpPost]
-        public async Task<ActionResult<BoardGame>> PostBoardGame([FromForm] BoardGameCreateDto boardGameData, IFormFile rule, IFormFile avatarGame)
+        public async Task<ActionResult<BoardGame>> PostBoardGame([FromForm] BoardGameCreateDTO boardGame)
         {
-
-            
             string filetypeImage;
-           
-            if (avatarGame.ContentType != null)
+            BoardGame boardGameCreate = new BoardGame(boardGame);
+            if (boardGame.avatarGame.ContentType != null)
             {
-                if (avatarGame.ContentType[0..6] == "image/")
+                if (boardGame.avatarGame.ContentType[0..6] == "image/")
                 {
-                    filetypeImage = "." + avatarGame.ContentType[6..avatarGame.ContentType.Length];
+                    filetypeImage = "." + boardGame.avatarGame.ContentType[6..boardGame.avatarGame.ContentType.Length];
                 }
                 else
                 {
@@ -104,10 +97,9 @@ namespace BoardMeet.Controllers
                 return BadRequest("Файл пуст");
             }
 
-            string filetypeRule;
-            if (rule.ContentType != null)
+            if (boardGame.rule.ContentType != null)
             {
-                if (!(rule.ContentType[0..15] == "application/pdf"))
+                if (!(boardGame.rule.ContentType[0..15] == "application/pdf"))
                 {
                     return BadRequest("Не PDF Файл");
                 }
@@ -116,21 +108,23 @@ namespace BoardMeet.Controllers
             {
                 return BadRequest("Файл пуст");
             }
+
             var imageNameUnique = System.Guid.NewGuid().ToString() + filetypeImage;
             var ruleNameUnique = System.Guid.NewGuid().ToString() + ".pdf";
-            string gameRoolPath;
-            string avatarPath;
-            if (avatarGame.Length > 0 && rule.Length > 0)
+
+            string gameRoolPath, avatarPath;
+
+            if (boardGame.avatarGame.Length > 0 && boardGame.rule.Length > 0)
             {
                 string imagePath = Path.Combine(_appEnvironment.WebRootPath + "/static/BoardGame/images", imageNameUnique);
                 string rulePath = Path.Combine(_appEnvironment.WebRootPath + "/static/BoardGame/rule", ruleNameUnique);
                 using (Stream fileStream = new FileStream(imagePath, FileMode.Create))
                 {
-                    await rule.CopyToAsync(fileStream);
+                    await boardGame.rule.CopyToAsync(fileStream);
                 }
                 using (Stream fileStream = new FileStream(rulePath, FileMode.Create))
                 {
-                    await rule.CopyToAsync(fileStream);
+                    await boardGame.rule.CopyToAsync(fileStream);
                 }
 
                 gameRoolPath = "static/BoardGame/rule/" + ruleNameUnique;
@@ -141,32 +135,13 @@ namespace BoardMeet.Controllers
                 return BadRequest("Файл пуст");
             }
 
-
-            BoardGame boardGame = new BoardGame
-            {
-                Name = boardGameData.Name,
-                RangeOfPlayersMax = boardGameData.RangeOfPlayersMax,
-                RangeOfPlayersMin = boardGameData.RangeOfPlayersMin,
-                GameTime = boardGameData.GameTime,
-                BestRangeOfPlayersMaxUser = 0,
-                BestRangeOfPlayersMinUser = 0,
-                GameTimeUser = 0,
-                RatingUser = 0,
-                Description = boardGameData.Description,
-                WeightGameUser = 0,
-                AgePlayer = boardGameData.AgePlayer,
-                AgePlayerUser = 0,
-                GameRool = gameRoolPath,
-                GameAvatar = avatarPath,
-                AuthorId = boardGameData.AuthorId,
-                СountComment = 0
-            };
-
-
-            _context.BoardGames.Add(boardGame);
+            boardGameCreate.GameAvatar = avatarPath;
+            boardGameCreate.GameRool = gameRoolPath;
+           
+            _context.BoardGames.Add(boardGameCreate);
             await _context.SaveChangesAsync();
             
-            return CreatedAtAction("GetBoardGame", new { id = boardGame.Id }, boardGame);
+            return CreatedAtAction("GetBoardGame", new { id = boardGameCreate.Id }, boardGameCreate);
             
         }
 
@@ -186,8 +161,10 @@ namespace BoardMeet.Controllers
         }
 
         [HttpPost("CreateComment")]
-        public async Task<ActionResult<Comment>> PostComment(Comment comment)
+        public async Task<ActionResult<Comment>> PostComment(CommentCreateDTO dto)
         {
+            Comment comment = new Comment(dto);
+
             _context.Comments.Add(comment);
 
             AddRaitingData(comment);
@@ -217,8 +194,8 @@ namespace BoardMeet.Controllers
             List<BoardGame> searchBG = await _context.BoardGames
                 .Where(bg => bg.Name.Contains(searchval))
                 .ToListAsync();
-            return Ok(searchBG);
 
+            return Ok(searchBG);
         }
         private async void AddRaitingData(Comment comment)
         {

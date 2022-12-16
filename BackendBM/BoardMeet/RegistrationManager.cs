@@ -4,14 +4,9 @@ namespace BoardMeet
 {
     public class RegistrationManager
     {
-        public User Registration(User user, string password)
+        public void Registration(User user, string password)
         {
-
-            string hash = BCrypt.Net.BCrypt.HashPassword(password);
-
-            user.Password = hash;
-
-            return user;
+            user.Password = (BCrypt.Net.BCrypt.HashPassword(password));
         }
     }
 }
