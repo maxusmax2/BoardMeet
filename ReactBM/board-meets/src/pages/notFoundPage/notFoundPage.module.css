@@ -1,47 +1,53 @@
-.decoration{
-    background:repeat url("../../../public/assets/images/background.png");
-    background-size: cover;
-    width: 60%;
-    height: 100%;
-    z-index: -1;
+.decoration {
+  background: repeat url("../../../public/assets/images/background.png");
+  background-size: cover;
+  width: 60%;
+  height: 100%;
+  z-index: -1;
 }
-.info{
-    width: 40%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-   
-    height: 100%;
+
+.info {
+  width: 40%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  height: 100%;
 }
-.title{
-    position: absolute;
-    width: 394px;
-    margin-bottom: 17px;
-    margin-top: 62px;
+
+.title {
+  position: absolute;
+  width: 394px;
+  margin-bottom: 17px;
+  margin-top: 62px;
 }
-.mainTitle{
-    color: #FFFFFF;
-    font-family: 'Anton';
-    font-weight: 400;
-    font-size: 61px;
-    line-height: 100%;
+
+.mainTitle {
+  color: #FFFFFF;
+  font-family: 'Anton';
+  font-weight: 400;
+  font-size: 61px;
+  line-height: 100%;
 }
-.subTitle{
-    color: #FFFFFF;
-    font-weight: 400;
-    font-size: 18px;
-    line-height: 100%;
+
+.subTitle {
+  color: #FFFFFF;
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 100%;
 }
-.container{
-    display: flex;
-    justify-content: flex-end;
-    height: 100%;
-    max-width: 100%;
-    background: radial-gradient(98.24% 439.22% at 1.76% 69.92%, #057402 7.6%, #64C661 43.54%, rgba(100, 198, 97, 0.76) 60.73%, rgba(0, 0, 0, 0) 100%);
+
+.container {
+  display: flex;
+  justify-content: flex-end;
+  height: 100%;
+  max-width: 100%;
+  background: radial-gradient(98.24% 439.22% at 1.76% 69.92%, #057402 7.6%, #64C661 43.54%, rgba(100, 198, 97, 0.76) 60.73%, rgba(0, 0, 0, 0) 100%);
 }
-.notFound{
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    justify-content: center;
+
+.notFound {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  justify-content: center;
 }

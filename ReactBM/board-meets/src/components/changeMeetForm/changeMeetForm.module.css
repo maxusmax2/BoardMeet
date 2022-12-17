@@ -1,12 +1,14 @@
-.container{
+.container {
     width: 852px;
     box-shadow: 0px 4px 6px -1px rgba(0, 0, 0, 0.25);
     border-radius: 44px;
 }
-.verticalLine{
+
+.verticalLine {
     border-right: 3px solid #fff;
 }
-.mainInfo{
+
+.mainInfo {
     background-color: #64C661;
     border-radius: 44px 44px 0px 0px;
     display: flex;
@@ -14,12 +16,14 @@
     box-sizing: border-box;
     padding: 20px 40px;
 }
-.inputIcon{
+
+.inputIcon {
     position: absolute;
-    top:4px;
+    top: 4px;
     right: 7px;
 }
-.input{
+
+.input {
     background: #FFFFFF;
     box-shadow: inset 0px 1px 5px rgba(0, 0, 0, 0.25);
     border-radius: 9px;
@@ -27,29 +31,33 @@
     border: 0;
     font-weight: 400;
     font-size: 15px;
-    line-height: 100%;  
+    line-height: 100%;
     color: #000000;
     box-sizing: border-box;
     padding: 0 37px 0 10px;
     width: inherit;
 }
-.input:focus{
+
+.input:focus {
     outline: 3px solid #057402;
 }
-.input::placeholder{
-    color:#9E9A9A;
+
+.input::placeholder {
+    color: #9E9A9A;
 }
-.namePlayersTime{
+
+.namePlayersTime {
     width: 50%;
 }
-.inputName{
+
+.inputName {
     position: relative;
     display: flex;
     flex-direction: column;
     width: 271px;
 }
 
-.inputLabel{
+.inputLabel {
     font-weight: 400;
     font-size: 17.8013px;
     line-height: 100%;
@@ -58,29 +66,34 @@
     margin-top: 15px;
     display: block;
 }
-.inputLabel::before{
+
+.inputLabel::before {
     content: "●";
     margin-right: 10px;
 }
-.playersTime{
+
+.playersTime {
     display: flex;
     width: 271px;
 }
-.inputPlayers{
+
+.inputPlayers {
     width: 94px;
     margin-right: 12px;
     position: relative;
 }
-.inputMaxTime{
+
+.inputMaxTime {
     width: 94px;
     position: relative;
 }
-.dateTime{
+
+.dateTime {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 20px;
 }
-.time{
+
+.time {
     background: #FFFFFF;
     box-shadow: inset 0px 1px 5px rgba(0, 0, 0, 0.25);
     border-radius: 9px;
@@ -88,57 +101,68 @@
     border: 0;
     font-weight: 400;
     font-size: 15px;
-    line-height: 100%;  
+    line-height: 100%;
     color: #000000;
     box-sizing: border-box;
-    padding:  0 0 0 10px;
+    padding: 0 0 0 10px;
     width: inherit;
 }
-.time:focus{
+
+.time:focus {
     outline: 3px solid #057402;
 }
+
 .time::-webkit-calendar-picker-indicator {
     opacity: 0;
 }
-.inputTime{
+
+.inputTime {
     position: relative;
 }
 
 .time:invalid::-webkit-datetime-edit {
     color: #9E9A9A;
 }
-.inputLocation{
+
+.inputLocation {
     position: relative;
     width: 100%;
 }
-.communicationInput{
+
+.communicationInput {
     position: relative;
     width: 271px;
 }
-.gamesInput{
+
+.gamesInput {
     position: relative;
     width: 271px;
 }
-.plusButton{
-    border:0;
+
+.plusButton {
+    border: 0;
     background: 0;
     width: 25px;
     padding: 0;
 }
-.moreInfo{
+
+.moreInfo {
     box-sizing: border-box;
     padding: 20px 40px;
     background: #EDFFEC;
     border-radius: 0px 0px 44px 44px;
 }
-.communicationGames{
+
+.communicationGames {
     display: flex;
     justify-content: space-around;
 }
-.communication{
+
+.communication {
     width: 54%;
 }
-.date{
+
+.date {
     background-color: #FFFFFF;
     box-shadow: inset 0px 2px 5px rgba(0, 0, 0, 0.25);
     border-radius: 9px;
@@ -149,38 +173,42 @@
     padding: 7px;
     font-weight: 400;
     font-size: 15px;
-    line-height: 100%;  
+    line-height: 100%;
     color: black;
-   
+
 }
-.date:focus{
+
+.date:focus {
     outline: 3px solid #057402;
 }
+
 .date::-webkit-calendar-picker-indicator {
-   opacity: 0;
+    opacity: 0;
 }
-.date::-webkit-datetime-edit {
-    color: #9E9A9A;
-}
-.inputDate{
+
+.inputDate {
     position: relative;
 }
-.gameItem{
+
+.gameItem {
     font-weight: 400;
     font-size: 15px;
     line-height: 25px;
     display: flex;
     align-items: center;
 }
-.minusButton{
+
+.minusButton {
     background: 0;
     border: 0;
-    margin-right:10px;
+    margin-right: 10px;
 }
-.minusButton:focus{
-    outline:0;
+
+.minusButton:focus {
+    outline: 0;
 }
-.inputGreenLabel{
+
+.inputGreenLabel {
     font-weight: 400;
     font-size: 18px;
     line-height: 100%;
@@ -188,15 +216,18 @@
     margin-bottom: 10px;
     display: block;
 }
-.inputGreenLabel::before{
+
+.inputGreenLabel::before {
     content: "●";
     margin-right: 10px;
 }
-.gamesList{
+
+.gamesList {
     margin-top: 20px;
     margin-bottom: 20px;
 }
-.buttonCreateMeet{
+
+.buttonCreateMeet {
     background: #64C661;
     border: 0;
     box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.25);
@@ -208,7 +239,17 @@
     line-height: 100%;
     color: #fff;
 }
-.buttonCreateMeet:active{
+
+.buttonCreateMeet:active {
     background: #5bb758;
     box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.25);
+}
+.inputCity{
+    position: relative;
+    width: 100%;
+}
+.dateTimeLocation {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }

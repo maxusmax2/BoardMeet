@@ -8,40 +8,40 @@ import style from "./playerPage.module.css";
 
 export const PlayerPage = ({ url }) => {
 
-    let { userId } = useParams();
-    const [typeMeet, setTypeMeet] = useState({ type: "Created", url: url + "User/CreatedMeet/" + userId });
+  let { userId } = useParams();
+  const [typeMeet, setTypeMeet] = useState({ type: "Created", url: url + "Users/CreatedMeet/" + userId });
 
-    const meets = useDataGet(typeMeet.url);
+  const meets = useDataGet(typeMeet.url);
 
-    let linkAdd = null;
+  let linkAdd = null;
 
-    if (typeMeet.type === "Created") {
-        linkAdd =
-            <NavLink to={`/user/${userId}/createMeet`}> <AddButton /></NavLink>
+  if (typeMeet.type === "Created") {
+    linkAdd =
+      <NavLink to={`/user/${userId}/createMeet`}> <AddButton /></NavLink>
+  }
+
+  const radioHandler = (value) => {
+    switch (value) {
+      case "1":
+        setTypeMeet({ type: "Created", url: url + "Users/CreatedMeet/" + userId });
+        break;
+      case "2":
+        setTypeMeet({ type: "Joined", url: url + "Users/JoinedMeet/" + userId });
+        break;
     }
+  }
+  return (
+    <>
+      <div className={style.switch}>
+        <Switch radioHandler={radioHandler} />
+      </div>
 
-    const radioHandler = (value) => {
-        switch (value) {
-            case "1":
-                setTypeMeet({ type: "Created", url: url + "User/CreatedMeet/" + userId });
-                break;
-            case "2":
-                setTypeMeet({ type: "Joined", url: url + "User/JoinedMeet/" + userId });
-                break;
-        }
-    }
-    return (
-        <>
-            <div className={style.switch}>
-                <Switch radioHandler={radioHandler} />
-            </div>
-
-            {linkAdd}
-            <ul className={style.meetsList}>
-                {!!meets?.length && meets.map((meet) =>
-                    <li key={meet.id} className={style.meetsItem}><MeetCard meet={meet} userId={userId} url={url} /></li>
-                )}
-            </ul>
-        </>
-    );
+      {linkAdd}
+      <ul className={style.meetsList}>
+        {!!meets?.length && meets.map((meet) =>
+          <li key={meet.id} className={style.meetsItem}><MeetCard meet={meet} userId={userId} url={url} /></li>
+        )}
+      </ul>
+    </>
+  );
 }
