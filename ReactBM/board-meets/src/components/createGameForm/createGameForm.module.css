@@ -1,0 +1,160 @@
+.container {
+  width: 826px;
+}
+
+.mainInfoContainer {
+  position: relative;
+  height: 500px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.mainGameInfo {
+  height: 500px;
+  max-width: 374px;
+  position: absolute;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.gameImg {
+  top: 0;
+  width: 267px;
+  height: 267px;
+  filter: drop-shadow(2.54305px 0px 5.08609px rgba(0, 0, 0, 0.25));
+  border-radius: 15px;
+  position: absolute;
+}
+
+.gameFilesName {
+  width: 334px;
+  height: 334px;
+  background: #64C661;
+  box-shadow: 0px 2px 63px -13px rgba(151, 71, 255, 0.08);
+  border-radius: 30px;
+  box-sizing: border-box;
+  padding: 120px 33px 18px 33px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.gameProp {
+  width: 100%;
+  height: 334px;
+  background: #DAFED9;
+  border-radius: 29px;
+  position: absolute;
+  z-index: 0;
+  box-sizing: border-box;
+  padding: 42px 0 42px 356px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.container select,
+.container input {
+  height: 27px;
+  font-weight: 300;
+  font-size: 15px;
+  line-height: 100%;
+  letter-spacing: -0.05em;
+  border: 0;
+  background: #FFFFFF;
+  box-shadow: inset 0px 1px 2px rgba(0, 0, 0, 0.25);
+  border-radius: 10px;
+  box-sizing: border-box;
+  padding: 0 15px;
+}
+
+.container select:focus {
+  outline: 3px solid #057402;
+}
+
+.inputContainer label {
+  display: flex;
+  align-items: center;
+  font-weight: 400;
+  font-size: 19px;
+  line-height: 100%;
+  letter-spacing: -0.05em;
+  color: #FFFFFF;
+}
+
+.inputContainer label span {
+  margin-left: 8px;
+}
+
+.inputContainer {
+  display: flex;
+  justify-content: space-between;
+}
+
+.genreInput {
+  width: 181px;
+}
+
+.nameInput {
+  width: 150px;
+}
+
+.description {
+  margin-top: 20px;
+  background-color: #64C661;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.25);
+  border-radius: 19px;
+  box-sizing: border-box;
+  padding: 30px 20px 20px 20px;
+}
+
+.description label {
+  display: block;
+  margin-bottom: 15px;
+  color: #FFFFFF;
+  letter-spacing: -0.05em;
+  font-weight: 400;
+  font-size: 19.0728px;
+  line-height: 100%;
+}
+
+.textDescription {
+  height: 584px;
+  width: 100%;
+  border-radius: 19px;
+  box-sizing: border-box;
+  padding: 20px;
+  border: 0;
+  font-weight: 300;
+  font-size: 19px;
+  line-height: 125%;
+  text-indent: 20px;
+  resize: none;
+}
+
+.textDescription:focus {
+  outline: 3px solid #057402;
+}
+
+.button {
+  margin-top: 20px;
+  background: #64C661;
+  border-radius: 66px 66px;
+  width: 100%;
+  height: 32px;
+  border: 0;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.25);
+  color: #FFFFFF;
+  font-weight: 400;
+  font-size: 19px;
+  line-height: 100%;
+  letter-spacing: -0.05em;
+}
+.button:active {
+  background: #5bb758;
+  box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.25);
+}
