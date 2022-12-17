@@ -1,0 +1,22 @@
+.container {
+  display: flex;
+  flex-direction: column-reverse;
+}
+
+.commentItem {
+  margin-bottom: 30px;
+  display: flex;
+}
+
+.commentItem:nth-child(2n) {
+  justify-content: flex-end;
+}
+
+.notComment {
+  font-weight: 400;
+  font-size: 25px;
+  line-height: 100%;
+  letter-spacing: -0.05em;
+  margin:20px 0;
+  text-align: center;
+}
