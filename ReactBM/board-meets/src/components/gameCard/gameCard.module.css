@@ -17,7 +17,7 @@
     align-items: flex-end;
     flex-direction: column;
     box-sizing: border-box;
-    padding: 20px 20px 20px 394px;
+    padding: 60px 20px 20px 394px;
 }
 
 .shortDesription {
@@ -53,6 +53,8 @@
 }
 
 .buttonChange {
+    position: absolute;
+    top: 20px;
     background: 0;
     border: 0;
 }
