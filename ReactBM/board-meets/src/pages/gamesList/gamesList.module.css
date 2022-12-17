@@ -1,0 +1,19 @@
+.container {
+  max-width: 1081px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.gameList {
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: center;
+}
+
+.meetsItem {
+  margin-top: 35px;
+}
+
+.meetsItem:last-child {
+  margin-bottom: 35px;
+}
