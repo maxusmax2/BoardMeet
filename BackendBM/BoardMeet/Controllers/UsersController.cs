@@ -53,7 +53,7 @@ namespace BoardMeet.Controllers
 
         [AllowAnonymous]
         [HttpPost("Registration")]
-        public async Task<IActionResult> RegistrationUser([FromForm] RegistartionData registartionData)
+        public async Task<IActionResult> RegistrationUser([FromBody] RegistartionData registartionData)
         {
             
             try
@@ -109,12 +109,33 @@ namespace BoardMeet.Controllers
 
             return Ok(user);
         }
+        [AllowAnonymous]
+        [HttpGet("createdBoardGames/{id}")]
+        public async Task<IActionResult> GetBoardGames(int id)
+        {
+            var user = await _context.Users
+                .Where(u => u.Id == id)
+                .Include(u => u.CreateBoardGames)
+                .FirstOrDefaultAsync();
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+            
+            return Ok(user.CreateBoardGames);
+        }
 
         [HttpDelete("{id}")]
         [Authorize]
         public async Task<StatusCodeResult> Delete(int id)
         {
-            Utils.AccessVerification(id, HttpContext.User.Identity as ClaimsIdentity);
+            string? error = Utils.AccessVerification(id, HttpContext.User.Identity as ClaimsIdentity);
+            if (error != null)
+            {
+                BadRequest(error);
+            }
+
             var user = await _context.Users.FindAsync(id);
             if (user != null)
             {
@@ -143,6 +164,12 @@ namespace BoardMeet.Controllers
                 return NotFound();
             }
 
+            foreach (Meet meet in user.JoinedMeets)
+            {
+                meet.RefreshState();
+            }
+            await _context.SaveChangesAsync();
+
             return Ok(user.JoinedMeets);
         }
 
@@ -155,13 +182,19 @@ namespace BoardMeet.Controllers
             .ThenInclude(u => u.Players)
             .Include(u => u.CreatedMeets)
             .ThenInclude(u => u.Author)
-
             .Where(u => u.Id == id)
             .FirstOrDefaultAsync();
+
             if (user == null)
             {
                 return NotFound();
             }
+
+            foreach (Meet meet in user.CreatedMeets)
+            {
+                meet.RefreshState();
+            }
+            await _context.SaveChangesAsync();
 
             return Ok(user.CreatedMeets);
         }
@@ -169,7 +202,12 @@ namespace BoardMeet.Controllers
         [Authorize]
         public async Task<IActionResult> SaveAvatar(IFormFile file, int id)
         {
-            Utils.AccessVerification(id, HttpContext.User.Identity as ClaimsIdentity);
+            string? error = Utils.AccessVerification(id, HttpContext.User.Identity as ClaimsIdentity);
+            if (error != null)
+            {
+                BadRequest(error);
+            }
+
             string filePath;
             string filetype;
 

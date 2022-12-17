@@ -31,7 +31,7 @@ namespace BoardMeet.Models
             Role = dto.Role;
             City = dto.City;
             AboutMe = dto.AboutMe;
-            AvatarUrl = "/static/User/avatar/default.png";
+            AvatarUrl = "/static/User/avatar/default.webp";
         }
     }
 }

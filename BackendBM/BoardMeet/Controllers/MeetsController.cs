@@ -1,6 +1,8 @@
 ﻿using BoardMeet.Models;
+using BoardMeet.UserException;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis.Text;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
@@ -23,16 +25,23 @@ namespace BoardMeet.Controllers
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            List<Meet> meet = await _context.Meets
+            List<Meet> meets = await _context.Meets
                 .Include(m => m.Players)
                 .Include(m => m.Author)
                 .ToListAsync();
-            if (meet == null)
+            
+            if (meets == null)
             {
                 return NotFound();
             }
 
-            return Ok(meet);
+            foreach (Meet meet in meets)
+            {
+                meet.RefreshState();
+            }
+            await _context.SaveChangesAsync();
+
+            return Ok(meets);
         }
 
         // GET api/<MeetController>/5
@@ -52,6 +61,8 @@ namespace BoardMeet.Controllers
                 return NotFound();
             }
 
+            meet.RefreshState();
+            await _context.SaveChangesAsync();
             return Ok(meet);
         }
         // POST api/<MeetController>
@@ -59,7 +70,12 @@ namespace BoardMeet.Controllers
         [Authorize(Roles="player,organization")]
         public async Task<IActionResult> Create([FromBody] MeetCreateDTO meet)
         {
-            Utils.AccessVerification(meet.AuthorId, HttpContext.User.Identity as ClaimsIdentity);
+            string? error = Utils.AccessVerification(meet.AuthorId, HttpContext.User.Identity as ClaimsIdentity);
+            if (error != null)
+            {
+                BadRequest(error);
+            }
+
             Meet Createdmeet = new Meet(meet);
 
             await _context.Meets.AddAsync(Createdmeet);
@@ -70,25 +86,34 @@ namespace BoardMeet.Controllers
 
         // POST api/<MeetController>
         [HttpPut("{id}")]
-        [Authorize]
-        public async Task<IActionResult> Edit([FromBody] Meet EditMeet, int id)
+        [Authorize(Roles = "player,organization")]
+        public async Task<IActionResult> Edit([FromBody] MeetChangeDTO meet, int id)
         {
-            if (id != EditMeet.Id)
+            var meetChange = await _context.Meets.FindAsync(id);
+            if (meetChange == null) 
             {
                 return NotFound();
             }
 
+            string? error = Utils.AccessVerification(meetChange.AuthorId, HttpContext.User.Identity as ClaimsIdentity);
+            if (error != null)
+            {
+                BadRequest(error);
+            }
+
+            meetChange.Change(meet);
+            meetChange.RefreshState();
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _context.Meets.Update(EditMeet);
+                    _context.Meets.Update(meetChange);
                     await _context.SaveChangesAsync();
 
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!MeetExists((int)EditMeet.Id))
+                    if (!MeetExists((int)meetChange.Id))
                     {
                         return NotFound();
                     }
@@ -97,16 +122,21 @@ namespace BoardMeet.Controllers
                         throw;
                     }
                 }
-                return Ok(EditMeet);
             }
-            return Ok(EditMeet);
+            return Ok(meetChange);
         }
 
         // POST api/<MeetController>
         [HttpPost("JoinMeet/{meetId}/User/{userId}")]
-        [Authorize]
+        [Authorize(Roles =("player"))]
         public async Task<IActionResult> JoinMeet(int meetId, int userId)
         {
+            string? error = Utils.AccessVerification(userId, HttpContext.User.Identity as ClaimsIdentity);
+            if (error != null)
+            {
+                BadRequest(error);
+            }
+
             var user = await _context.Users
                 .FindAsync(userId);
             if (user == null)
@@ -135,14 +165,21 @@ namespace BoardMeet.Controllers
 
             meet.Players.Add(user);
             meet.PeopleCount++;
+            meet.RefreshState();
             await _context.SaveChangesAsync(true);
 
             return Ok();
         }
         [HttpDelete("ExitMeet/{meetId}/User/{userId}")]
-        [Authorize]
+        [Authorize(Roles ="player")]
         public async Task<IActionResult> ExitMeet(int meetId, int userId)
         {
+            string? error = Utils.AccessVerification(userId, HttpContext.User.Identity as ClaimsIdentity);
+            if (error != null)
+            {
+                BadRequest(error);
+            }
+
             var user = await _context.Users.FindAsync(userId);
             if (user == null)
             {
@@ -163,6 +200,7 @@ namespace BoardMeet.Controllers
 
             meet.Players.Remove(user);
             meet.PeopleCount--;
+            meet.RefreshState();
             await _context.SaveChangesAsync(true);
 
             return Ok();
@@ -170,25 +208,87 @@ namespace BoardMeet.Controllers
 
         // DELETE api/<MeetController>/5
         [HttpDelete("{id}")]
-        [Authorize]
+        [Authorize(Roles ="player,organization")]
         public async Task<StatusCodeResult> Delete(int id)
         {
-
+            
             var m = await _context.Meets.FindAsync(id);
-            if (m != null)
+            if(m.MeetState == MeetStateEnum.Recruiting || m.MeetState == MeetStateEnum.Finished)
             {
-                _context.Meets.Attach(m);
-                _context.Meets.Remove(m);
-                await _context.SaveChangesAsync(true);
-                return StatusCode(200);
+            
+                if (m != null)
+                {
+                    try
+                    {
+                        Utils.AccessVerification(m.AuthorId, HttpContext.User.Identity as ClaimsIdentity);
+                    }
+                    catch (NotAccessException ex)
+                    {
+                        BadRequest(ex.Message);
+                    }
+                    catch (NotAuthorizedException ex)
+                    {
+                        BadRequest(ex.Message);
+                    }
+                    _context.Meets.Attach(m);
+                    _context.Meets.Remove(m);
+                    await _context.SaveChangesAsync(true);
+                    return StatusCode(200);
+                }
+            }
+            return BadRequest();
+        }
+        [HttpPost("Lock/{id}")]
+        [Authorize(Roles = "player,organization")]
+        public async Task<StatusCodeResult> Lock(int id)
+        {
+            Meet meet = await _context.Meets.FirstOrDefaultAsync(m => m.Id == id);
+            if (meet != null)
+            {
+                string? error = Utils.AccessVerification(meet.AuthorId, HttpContext.User.Identity as ClaimsIdentity);
+                if (error != null)
+                {
+                    BadRequest(error);
+                }
+                if (meet.MeetState == MeetStateEnum.StartOpen) 
+                {
+                    meet.MeetState = MeetStateEnum.StartLock;
+                    await _context.SaveChangesAsync(true);
+                    return Ok();
+                }
+            }
+            return BadRequest();
+        }
+        [HttpPost("Open/{id}")]
+        [Authorize(Roles = "player,organization")]
+        public async Task<StatusCodeResult> Open(int id)
+        {
+            Meet meet = await _context.Meets.FirstOrDefaultAsync(m => m.Id == id);
+            if (meet != null)
+            {
+                string? error = Utils.AccessVerification(meet.AuthorId, HttpContext.User.Identity as ClaimsIdentity);
+                if (error != null)
+                {
+                    BadRequest(error);
+                }
+                if (meet.MeetState == MeetStateEnum.StartLock)
+                {
+                    meet.MeetState = MeetStateEnum.StartOpen;
+                    await _context.SaveChangesAsync(true);
+                    return Ok();
+                }
             }
             return BadRequest();
         }
 
-        [HttpGet("Search")]
+        [HttpPost("Search")]
         public async Task<IActionResult> SearchMeet(SearchValMeet searchValue)
         {
             List<Meet> searchMeet;
+            if(searchValue == null) 
+            {
+                return Ok( await _context.Meets.ToListAsync());
+            }
 
             if (searchValue.City == null && searchValue.Date != null)
             {
@@ -215,12 +315,17 @@ namespace BoardMeet.Controllers
             {
                 DateTime searchDate = ((DateTime)searchValue.Date).Date;
                 searchMeet = await _context.Meets
-                    .Where(m => m.City == searchValue.City)
+                    .Where(m => m.City.Contains(searchValue.City))
                     .Where(m => m.Date.Date == searchDate)
                     .Include(m => m.Players)
                     .Include(m => m.Author)
                     .ToListAsync();
             }
+            foreach(Meet meet in searchMeet) 
+            {
+                meet.RefreshState();
+            }
+            await _context.SaveChangesAsync(); 
             return Ok(searchMeet);
         }
 
