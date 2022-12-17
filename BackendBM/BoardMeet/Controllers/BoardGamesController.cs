@@ -56,9 +56,10 @@ namespace BoardMeet.Controllers
         // PUT: api/BoardGames/5
         [HttpPut("{id}")]
         [Authorize(Roles = "publisher")]
-        public async Task<IActionResult> PutBoardGame(int id, BoardGameChangeDTO boardGame)
+        public async Task<IActionResult> PutBoardGame(int id, [FromForm]BoardGameChangeDTO boardGame)
         {
             BoardGame boardGameChange = await _context.BoardGames.FirstAsync(x => x.Id == id);
+
             string? error = Utils.AccessVerification(boardGameChange.AuthorId, HttpContext.User.Identity as ClaimsIdentity);
             if (error != null)
             {
@@ -69,9 +70,73 @@ namespace BoardMeet.Controllers
             {
                 return BadRequest();
             }
+
+            if (boardGame.avatarGame != null) {
+                string filetypeImage;
+                if (boardGame.avatarGame.ContentType != null)
+                {
+                    if (boardGame.avatarGame.ContentType[0..6] == "image/")
+                    {
+                        filetypeImage = "." + boardGame.avatarGame.ContentType[6..boardGame.avatarGame.ContentType.Length];
+                    }
+                    else
+                    {
+                        return BadRequest("Файл не картинка");
+                    }
+                }
+                else
+                {
+                    return BadRequest("Файл пуст");
+                }
+                var imageNameUnique = System.Guid.NewGuid().ToString() + filetypeImage;
+                if (boardGame.avatarGame.Length > 0) 
+                {
+                    string imagePath = Path.Combine(_appEnvironment.WebRootPath + "/static/BoardGame/images", imageNameUnique);
+                    using (Stream fileStream = new FileStream(imagePath, FileMode.Create))
+                    {
+                        await boardGame.avatarGame.CopyToAsync(fileStream);
+                    }
+                    boardGameChange.GameAvatar  = "static/BoardGame/images/" + imageNameUnique;
+                }
+                else
+                {
+                    BadRequest("Файл с картинкой пуст");
+                }
+            }
+
+            if(boardGame.rule !=null)
+            {
+                if (boardGame.rule.ContentType != null)
+                {
+                    if (!(boardGame.rule.ContentType[0..15] == "application/pdf"))
+                    {
+                        return BadRequest("Не PDF Файл");
+                    }
+                }
+                else
+                {
+                    return BadRequest("Файл с правилами пуст");
+                }
+                var ruleNameUnique = System.Guid.NewGuid().ToString() + ".pdf";
+                if (boardGame.rule.Length > 0)
+                {
+                    string rulePath = Path.Combine(_appEnvironment.WebRootPath + "/static/BoardGame/rule", ruleNameUnique);
+
+                    using (Stream fileStream = new FileStream(rulePath, FileMode.Create))
+                    {
+                        await boardGame.rule.CopyToAsync(fileStream);
+                    }
+                    boardGameChange.Rule = "static/BoardGame/rule/" + ruleNameUnique; ;
+                }
+                else 
+                {
+                    BadRequest("Файл с правилами пуст");
+                }
+            }
+
+
             boardGameChange.Change(boardGame);
-
-
+            
             _context.Entry(boardGameChange).State = EntityState.Modified;
 
             try
@@ -106,7 +171,6 @@ namespace BoardMeet.Controllers
                 BadRequest(error);
             }
 
-            BoardGame boardGameCreate = new BoardGame(boardGame);
             if (boardGame.avatarGame.ContentType != null)
             {
                 if (boardGame.avatarGame.ContentType[0..6] == "image/")
@@ -160,6 +224,8 @@ namespace BoardMeet.Controllers
             {
                 return BadRequest("Файл пуст");
             }
+
+            BoardGame boardGameCreate = new BoardGame(boardGame);
 
             boardGameCreate.GameAvatar = avatarPath;
             boardGameCreate.Rule = gameRulePath;

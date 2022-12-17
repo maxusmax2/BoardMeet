@@ -8,14 +8,19 @@ namespace BoardMeet.Models
 {
     public class Meet : BaseEntity
     {
-        
+        public static readonly string Recruiting = "Recruiting";
+        public static readonly string RecruitingFull = "RecruitingFull";
+        public static readonly string StartOpen = "StartOpen";
+        public static readonly string StartLock = "StartLock";
+        public static readonly string StartFull = "StartFull";
+        public static readonly string Finished = "Finished";
         public string Name { get; set; }
         public int PeopleCount { get; set; }
         public int PeopleCountMax { get; set; }
         public int Duration { get; set; }
         public string? Link { get; set; }
         public DateTime Date { get; set; }
-        public string MeetState { get; set; }
+        public string State { get; set; }
         public string Location { get; set; }
         public string City { get; set; }
         public string Games { get; set; }
@@ -36,7 +41,7 @@ namespace BoardMeet.Models
             City = dto.City;
             Games = dto.Games;
             AuthorId = dto.AuthorId;
-            MeetState = MeetStateEnum.Recruiting;
+            State = Recruiting;
 
         }
         public void Change(MeetChangeDTO dto) 
@@ -56,31 +61,68 @@ namespace BoardMeet.Models
         public void RefreshState() 
         {
             DateTime now = DateTime.Now;
-            if(now < Date.AddMinutes(Duration)) 
+            if(now > Date.AddMinutes(Duration)) 
             {
-                MeetState = MeetStateEnum.Finished;
+                State = Finished;
                 return;
             }
             else if (PeopleCount < PeopleCountMax && now < Date) 
             {
-                MeetState = MeetStateEnum.Recruiting;
+                State = Recruiting;
                 return;
             }
             else if(PeopleCount >= PeopleCountMax && now < Date)
             {
-                MeetState = MeetStateEnum.RecruitingFull;
+                State = RecruitingFull;
                 return;
             }
-            else if (PeopleCount < PeopleCountMax && now > Date && MeetState != MeetStateEnum.StartLock)
+            else if (PeopleCount < PeopleCountMax && now > Date && State != StartLock)
             {
-                MeetState = MeetStateEnum.StartOpen;
+                State = StartOpen;
                 return;
             }
             else if(PeopleCount >= PeopleCountMax && now > Date) 
             {
-                MeetState = MeetStateEnum.StartFull;
+                State = StartFull;
                 return;
             }
+        }
+        public bool Lock() 
+        {
+            if(State ==StartOpen) 
+            {
+                State= StartLock;
+                return true;
+            }
+            return false;
+        }
+
+        public bool Open()
+        {
+            if (State == StartLock)
+            {
+                State = StartOpen;
+                return true;
+            }
+            return false;
+        }
+
+        public  bool Visibility() 
+        {
+            if(State == StartOpen || State == Recruiting) 
+            {
+                return true;
+            }
+            return false;
+        }
+
+        public bool Removed() 
+        {
+            if (State == Recruiting || State == Finished) 
+            {
+                return true;
+            }
+            return false;
         }
 
     }
@@ -110,14 +152,6 @@ namespace BoardMeet.Models
         public List<User>? Players { get; set; }
 
     }
-    public class MeetStateEnum
-    {
-        public static readonly string Recruiting = "Recruiting";
-        public static readonly string RecruitingFull = "RecruitingFull";
-        public static readonly string StartOpen = "StartOpen";
-        public static readonly string StartLock = "StartLock";
-        public static readonly string StartFull = "StartFull";
-        public static readonly string Finished = "Finished";
-    }
+   
 
 }

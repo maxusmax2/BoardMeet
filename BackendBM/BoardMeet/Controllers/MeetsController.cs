@@ -26,6 +26,7 @@ namespace BoardMeet.Controllers
         public async Task<IActionResult> Get()
         {
             List<Meet> meets = await _context.Meets
+                .Where(m=> m.Visibility())
                 .Include(m => m.Players)
                 .Include(m => m.Author)
                 .ToListAsync();
@@ -103,6 +104,7 @@ namespace BoardMeet.Controllers
 
             meetChange.Change(meet);
             meetChange.RefreshState();
+
             if (ModelState.IsValid)
             {
                 try
@@ -213,7 +215,7 @@ namespace BoardMeet.Controllers
         {
             
             var m = await _context.Meets.FindAsync(id);
-            if(m.MeetState == MeetStateEnum.Recruiting || m.MeetState == MeetStateEnum.Finished)
+            if(m.Removed())
             {
             
                 if (m != null)
@@ -250,9 +252,8 @@ namespace BoardMeet.Controllers
                 {
                     BadRequest(error);
                 }
-                if (meet.MeetState == MeetStateEnum.StartOpen) 
+                if (meet.Lock()) 
                 {
-                    meet.MeetState = MeetStateEnum.StartLock;
                     await _context.SaveChangesAsync(true);
                     return Ok();
                 }
@@ -271,9 +272,8 @@ namespace BoardMeet.Controllers
                 {
                     BadRequest(error);
                 }
-                if (meet.MeetState == MeetStateEnum.StartLock)
+                if (meet.Open())
                 {
-                    meet.MeetState = MeetStateEnum.StartOpen;
                     await _context.SaveChangesAsync(true);
                     return Ok();
                 }

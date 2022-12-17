@@ -115,8 +115,8 @@ namespace BoardMeet.Models
         public string Artists { get; set; }
         public string Publishers { get; set; }
         public int AuthorId { get; set; }
-        public IFormFile? rule { get; set; }
-        public IFormFile? avatarGame { get; set; }
+        public IFormFile rule { get; set; }
+        public IFormFile avatarGame { get; set; }
     }
 
     public class BoardGameChangeDTO
@@ -131,5 +131,7 @@ namespace BoardMeet.Models
         public int GameTime { get; set; }
         public string Description { get; set; }
         public int AgePlayer { get; set; }
+        public IFormFile? rule { get; set; }
+        public IFormFile? avatarGame { get; set; }
     }
 }
