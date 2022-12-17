@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import { Route, Routes } from "react-router-dom";
 import { MainLayout } from "./layouts/mainLayout/mainLayout";
 import { LogIn } from "./pages/logIn/logIn";
@@ -11,47 +10,44 @@ import { CreateMeetPage } from "./pages/createMeetPage/createMeetPage";
 import { Registration } from "./pages/registration/registration";
 import Cookies from 'universal-cookie';
 import { ChangeMeetPage } from "./pages/changeMeetPage/changeMeetPage";
-import { GameCard } from "./components/gameCard/gameCard";
-import { GameList } from "./pages/gamesList/gamesList";
+import { GamesList } from "./pages/gamesList/gamesList";
 import { GamePage } from "./pages/gamePage/gamePage";
+import { PublisherPage } from "./pages/publisherPage/publisherPage";
+import { CreateGamePage } from "./pages/createGamePage/createGamePage";
+import { ChangeGamePage } from "./pages/changGamePage/changeGamePage";
 
 export const App = () => {
-  
   const cookies = new Cookies();
-  const [user,setUser] = useState(cookies.get('user')=="0"?parseInt(cookies.get('user')):cookies.get('user'));
-  const [token,setToken] = useState(cookies.get('token')=="0"?parseInt(cookies.get('token')):cookies.get('token'));
-  
+
   const url = "http://25.43.153.92:5057/api/";
 
   const buttonHandler = (user,token) => {
     cookies.set('user', user, { path: '/' });
     cookies.set('token', token, { path: '/' });
-    console.log(cookies.get('user')); 
-    setUser(cookies.get('user'));
-    setToken(cookies.get('token'));
   }
   const exitHandler = () => {
     cookies.set('user', 0, { path: '/' });
     cookies.set('token', 0, { path: '/' });
-    setUser(cookies.get('user'));
-    setToken(cookies.get('token'));
     window.location.reload()
   }
 
   return (
     <>
       <Routes>
-        <Route path="/" exact element={<MainLayout user = {user} exitHandler={exitHandler}/>}>
-          <Route path="/" element={<MeetsList userId = {user?.id} url = {url} role = {user?.role}/>}/>
-          <Route path="/games" element={<GameList/>}/>
-          <Route path="/game/:gameId" element={<GamePage/>}/>
+        <Route path="/" exact element={<MainLayout exitHandler={exitHandler}/>}>
+          <Route path="/" element={<MeetsList url = {url} />}/>
+          <Route path="/games" element={<GamesList url={url}/>}/>
+          <Route path="/game/:gameId" element={<GamePage url={url}/>}>
+          </Route>
           <Route path="/user/:userId" element={<UserPageLayout url = {url}/>}>
             <Route path="createMeet" element={<CreateMeetPage url ={url}/>}/>
             <Route path="changeMeet/:meetId" element={<ChangeMeetPage url={url}/>}/>
             <Route path="player" element={<PlayerPage url = {url} />}/>
             <Route path="organization" element={<OrganizationPage url = {url} />}/>
-            <Route path="publisher" element={<MeetsList/>}/>
-            <Route path="administrator" element={<MeetsList/>}/>
+            <Route path="createGame" element={<CreateGamePage url ={url}/>}/>
+            <Route path="changeGame/:gameId" element={<ChangeGamePage url={url}/>}/>
+            <Route path="publisher" element={<PublisherPage url={url}/>}/>
+            <Route path="admin" element={<MeetsList/>}/>
           </Route>
         </Route>
         <Route path="/logIn" element={<LogIn buttonHandler={buttonHandler} url = {url}/>}></Route>
