@@ -19,14 +19,11 @@
 .date::-webkit-calendar-picker-indicator {
    opacity: 0;
 }
-.date::-webkit-datetime-edit {
-    color: #9E9A9A;
-}
 .container{
     position: relative;
 }
 .inputIcon{
     position: absolute;
-    right: 5px;
-    top: 1px;
+    right: 7px;
+    top: 4px;
 }
