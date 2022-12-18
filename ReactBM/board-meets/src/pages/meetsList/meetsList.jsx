@@ -24,7 +24,6 @@ export const MeetsList = ({ url }) => {
     axios.post(url + "Meets/Search", body, getConfig())
     .then((response) => {
       setMeets(response.data);
-     ;
     })
   }
   return (
