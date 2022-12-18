@@ -7,7 +7,7 @@ export const FilterGames = ({ register, searchHandler, handleSubmit }) => {
       <div className={style.selectContainer}>
         <label htmlFor="genre"><Genre width="26" height="26" /></label>
         <select className={style.selectGenre} name="genre" id="genre" {...register("genre")}>
-          <option value="Жанр игры">Жанр игры</option>
+          <option value="Все игры">Все игры</option>
           <option value="Карточная">Карточная</option>
           <option value="Ролевая">Ролевая</option>
           <option value="Игра с костями">Игра с костями</option>
