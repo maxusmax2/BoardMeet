@@ -1,8 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using Newtonsoft.Json.Linq;
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Runtime.Serialization;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BoardMeet.Models
 {
@@ -24,12 +20,14 @@ namespace BoardMeet.Models
         public string Location { get; set; }
         public string City { get; set; }
         public string Games { get; set; }
-        public int AuthorId { get; set; }
-        [ForeignKey("AuthorId")]
-        public User? Author { get; set; }
-        public virtual List<User>? Players { get; set; }
+        public  int AuthorId { get; set; }
+
+        public  User? Author { get; set; }
+
+        //[InverseProperty(nameof(User.JoinedMeets))]
+        public virtual ICollection<User>? Players { get; set; }
         public Meet() { }
-        public Meet(MeetCreateDTO dto) 
+        public Meet(MeetCreateDTO dto)
         {
             Name = dto.Name;
             PeopleCount = 0;
@@ -44,10 +42,10 @@ namespace BoardMeet.Models
             State = Recruiting;
 
         }
-        public void Change(MeetChangeDTO dto) 
+        public void Change(MeetChangeDTO dto)
         {
             Name = dto.Name;
-            PeopleCount = Players.Count();
+            PeopleCount = dto.Players.Count();
             PeopleCountMax = dto.PeopleCountMax;
             Duration = dto.Duration;
             Link = dto.Link;
@@ -58,20 +56,20 @@ namespace BoardMeet.Models
             Players = dto.Players;
         }
 
-        public void RefreshState() 
+        public void RefreshState()
         {
             DateTime now = DateTime.Now;
-            if(now > Date.AddMinutes(Duration)) 
+            if (now > Date.AddMinutes(Duration))
             {
                 State = Finished;
                 return;
             }
-            else if (PeopleCount < PeopleCountMax && now < Date) 
+            else if (PeopleCount < PeopleCountMax && now < Date)
             {
                 State = Recruiting;
                 return;
             }
-            else if(PeopleCount >= PeopleCountMax && now < Date)
+            else if (PeopleCount >= PeopleCountMax && now < Date)
             {
                 State = RecruitingFull;
                 return;
@@ -81,17 +79,17 @@ namespace BoardMeet.Models
                 State = StartOpen;
                 return;
             }
-            else if(PeopleCount >= PeopleCountMax && now > Date) 
+            else if (PeopleCount >= PeopleCountMax && now > Date)
             {
                 State = StartFull;
                 return;
             }
         }
-        public bool Lock() 
+        public bool Lock()
         {
-            if(State ==StartOpen) 
+            if (State == StartOpen)
             {
-                State= StartLock;
+                State = StartLock;
                 return true;
             }
             return false;
@@ -107,18 +105,18 @@ namespace BoardMeet.Models
             return false;
         }
 
-        public  bool Visibility() 
+        public bool Visibility()
         {
-            if(State == StartOpen || State == Recruiting) 
+            if (State == StartOpen || State == Recruiting)
             {
                 return true;
             }
             return false;
         }
 
-        public bool Removed() 
+        public bool Removed()
         {
-            if (State == Recruiting || State == Finished) 
+            if (State == Recruiting || State == Finished || State ==RecruitingFull)
             {
                 return true;
             }
@@ -127,7 +125,7 @@ namespace BoardMeet.Models
 
     }
 
-    public class MeetCreateDTO 
+    public class MeetCreateDTO
     {
         public string Name { get; set; }
         public int PeopleCountMax { get; set; }
@@ -152,6 +150,6 @@ namespace BoardMeet.Models
         public List<User>? Players { get; set; }
 
     }
-   
+
 
 }

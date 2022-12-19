@@ -2,9 +2,9 @@
 using BoardMeet.UserException;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.CodeAnalysis.Text;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
+
 
 namespace BoardMeet.Controllers
 {
@@ -23,14 +23,31 @@ namespace BoardMeet.Controllers
         // GET: api/<MeetController>
         [AllowAnonymous]
         [HttpGet]
-        public async Task<IActionResult> Get()
+        public async Task<IActionResult> GetMeets()
         {
-            List<Meet> meets = await _context.Meets
-                .Where(m=> m.Visibility())
-                .Include(m => m.Players)
-                .Include(m => m.Author)
+            var meets = await _context.Meets
+                .Select
+                ( m => new Meet
+                {
+                    Id = m.Id,
+                    Name = m.Name,
+                    Duration= m.Duration,
+                    PeopleCount = m.PeopleCount,
+                    PeopleCountMax = m.PeopleCountMax,
+                    Link = m.Link,
+                    Date = m.Date,
+                    State = m.State,
+                    Location = m.Location,
+                    City = m.City,
+                    Games = m.Games,
+                    AuthorId = m.AuthorId,
+                    Author = m.Author,
+                    Players = m.Players
+                }
+                )
                 .ToListAsync();
-            
+
+
             if (meets == null)
             {
                 return NotFound();
@@ -38,23 +55,42 @@ namespace BoardMeet.Controllers
 
             foreach (Meet meet in meets)
             {
+
                 meet.RefreshState();
             }
+            
             await _context.SaveChangesAsync();
+           
 
-            return Ok(meets);
+            return Ok(meets.Where(m => m.Visibility()));
         }
 
         // GET api/<MeetController>/5
         [AllowAnonymous]
         [HttpGet("{id}")]
-        public async Task<IActionResult> Get(int id)
+        public async Task<IActionResult> GetMeet(int id)
         {
-
             var meet = await _context.Meets
                 .Where(m => m.Id == id)
-                .Include(m => m.Players)
-                .Include(m => m.Author)
+                .Select
+                (m => new Meet
+                {
+                    Id = m.Id,
+                    Name = m.Name,
+                    Duration = m.Duration,
+                    PeopleCount = m.PeopleCount,
+                    PeopleCountMax = m.PeopleCountMax,
+                    Link = m.Link,
+                    Date = m.Date,
+                    State = m.State,
+                    Location = m.Location,
+                    City = m.City,
+                    Games = m.Games,
+                    AuthorId = m.AuthorId,
+                    Author = m.Author,
+                    Players = m.Players
+                }
+                )
                 .FirstOrDefaultAsync();
 
             if (meet == null)
@@ -62,26 +98,28 @@ namespace BoardMeet.Controllers
                 return NotFound();
             }
 
+           
+
             meet.RefreshState();
             await _context.SaveChangesAsync();
             return Ok(meet);
         }
         // POST api/<MeetController>
         [HttpPost]
-        [Authorize(Roles="player,organization")]
+        [Authorize(Roles = "player,organization")]
         public async Task<IActionResult> Create([FromBody] MeetCreateDTO meet)
         {
             string? error = Utils.AccessVerification(meet.AuthorId, HttpContext.User.Identity as ClaimsIdentity);
             if (error != null)
             {
-                BadRequest(error);
+                return BadRequest(error);
             }
 
             Meet Createdmeet = new Meet(meet);
 
             await _context.Meets.AddAsync(Createdmeet);
 
-            await _context.SaveChangesAsync(true);
+            await _context.SaveChangesAsync();
             return Ok(Createdmeet);
         }
 
@@ -91,7 +129,7 @@ namespace BoardMeet.Controllers
         public async Task<IActionResult> Edit([FromBody] MeetChangeDTO meet, int id)
         {
             var meetChange = await _context.Meets.FindAsync(id);
-            if (meetChange == null) 
+            if (meetChange == null)
             {
                 return NotFound();
             }
@@ -99,18 +137,22 @@ namespace BoardMeet.Controllers
             string? error = Utils.AccessVerification(meetChange.AuthorId, HttpContext.User.Identity as ClaimsIdentity);
             if (error != null)
             {
-                BadRequest(error);
+                return BadRequest(error);
             }
-
+            
             meetChange.Change(meet);
             meetChange.RefreshState();
-
+            if (meetChange.Players.Count() == meet.Players.Count())
+            {
+                meetChange.Players = meet.Players = null;
+            }
+           
             if (ModelState.IsValid)
             {
                 try
                 {
                     _context.Meets.Update(meetChange);
-                    await _context.SaveChangesAsync();
+                    await _context.SaveChangesAsync(true);
 
                 }
                 catch (DbUpdateConcurrencyException)
@@ -130,13 +172,13 @@ namespace BoardMeet.Controllers
 
         // POST api/<MeetController>
         [HttpPost("JoinMeet/{meetId}/User/{userId}")]
-        [Authorize(Roles =("player"))]
+        [Authorize(Roles = ("player"))]
         public async Task<IActionResult> JoinMeet(int meetId, int userId)
         {
             string? error = Utils.AccessVerification(userId, HttpContext.User.Identity as ClaimsIdentity);
             if (error != null)
             {
-                BadRequest(error);
+                return BadRequest(error);
             }
 
             var user = await _context.Users
@@ -170,16 +212,16 @@ namespace BoardMeet.Controllers
             meet.RefreshState();
             await _context.SaveChangesAsync(true);
 
-            return Ok();
+            return Ok(meet);
         }
         [HttpDelete("ExitMeet/{meetId}/User/{userId}")]
-        [Authorize(Roles ="player")]
+        [Authorize(Roles = "player")]
         public async Task<IActionResult> ExitMeet(int meetId, int userId)
         {
             string? error = Utils.AccessVerification(userId, HttpContext.User.Identity as ClaimsIdentity);
             if (error != null)
             {
-                BadRequest(error);
+                return BadRequest(error);
             }
 
             var user = await _context.Users.FindAsync(userId);
@@ -205,32 +247,25 @@ namespace BoardMeet.Controllers
             meet.RefreshState();
             await _context.SaveChangesAsync(true);
 
-            return Ok();
+            return Ok(meet);
         }
 
         // DELETE api/<MeetController>/5
         [HttpDelete("{id}")]
-        [Authorize(Roles ="player,organization")]
-        public async Task<StatusCodeResult> Delete(int id)
+        [Authorize(Roles = "player,organization")]
+        public async Task<IActionResult> Delete(int id)
         {
-            
+
             var m = await _context.Meets.FindAsync(id);
-            if(m.Removed())
+            if (m.Removed())
             {
-            
+
                 if (m != null)
                 {
-                    try
+                    string? error = Utils.AccessVerification(m.AuthorId, HttpContext.User.Identity as ClaimsIdentity);
+                    if (error != null)
                     {
-                        Utils.AccessVerification(m.AuthorId, HttpContext.User.Identity as ClaimsIdentity);
-                    }
-                    catch (NotAccessException ex)
-                    {
-                        BadRequest(ex.Message);
-                    }
-                    catch (NotAuthorizedException ex)
-                    {
-                        BadRequest(ex.Message);
+                        return BadRequest(error);
                     }
                     _context.Meets.Attach(m);
                     _context.Meets.Remove(m);
@@ -242,7 +277,7 @@ namespace BoardMeet.Controllers
         }
         [HttpPost("Lock/{id}")]
         [Authorize(Roles = "player,organization")]
-        public async Task<StatusCodeResult> Lock(int id)
+        public async Task<IActionResult> Lock(int id)
         {
             Meet meet = await _context.Meets.FirstOrDefaultAsync(m => m.Id == id);
             if (meet != null)
@@ -250,9 +285,9 @@ namespace BoardMeet.Controllers
                 string? error = Utils.AccessVerification(meet.AuthorId, HttpContext.User.Identity as ClaimsIdentity);
                 if (error != null)
                 {
-                    BadRequest(error);
+                    return BadRequest(error);
                 }
-                if (meet.Lock()) 
+                if (meet.Lock())
                 {
                     await _context.SaveChangesAsync(true);
                     return Ok();
@@ -262,7 +297,7 @@ namespace BoardMeet.Controllers
         }
         [HttpPost("Open/{id}")]
         [Authorize(Roles = "player,organization")]
-        public async Task<StatusCodeResult> Open(int id)
+        public async Task<IActionResult> Open(int id)
         {
             Meet meet = await _context.Meets.FirstOrDefaultAsync(m => m.Id == id);
             if (meet != null)
@@ -270,7 +305,7 @@ namespace BoardMeet.Controllers
                 string? error = Utils.AccessVerification(meet.AuthorId, HttpContext.User.Identity as ClaimsIdentity);
                 if (error != null)
                 {
-                    BadRequest(error);
+                    return BadRequest(error);
                 }
                 if (meet.Open())
                 {
@@ -285,12 +320,9 @@ namespace BoardMeet.Controllers
         public async Task<IActionResult> SearchMeet(SearchValMeet searchValue)
         {
             List<Meet> searchMeet;
-            if(searchValue == null) 
-            {
-                return Ok( await _context.Meets.ToListAsync());
-            }
 
-            if (searchValue.City == null && searchValue.Date != null)
+
+            if (searchValue.City == "" && searchValue.Date != null)
             {
                 DateTime searchDate = ((DateTime)searchValue.Date).Date;
                 searchMeet = await _context.Meets
@@ -299,7 +331,7 @@ namespace BoardMeet.Controllers
                     .Include(m => m.Author)
                     .ToListAsync();
             }
-            else if (searchValue.Date == null && searchValue.City != null)
+            else if (searchValue.Date == null && searchValue.City != "")
             {
                 searchMeet = await _context.Meets
                     .Where(m => m.City == searchValue.City)
@@ -307,9 +339,9 @@ namespace BoardMeet.Controllers
                     .Include(m => m.Author)
                     .ToListAsync();
             }
-            else if (searchValue.Date == null && searchValue.City == null)
+            else if (searchValue.Date == null && searchValue.City == "")
             {
-                return BadRequest("Нет данных для поиска");
+                return await GetMeets();
             }
             else
             {
@@ -321,11 +353,11 @@ namespace BoardMeet.Controllers
                     .Include(m => m.Author)
                     .ToListAsync();
             }
-            foreach(Meet meet in searchMeet) 
+            foreach (Meet meet in searchMeet)
             {
                 meet.RefreshState();
             }
-            await _context.SaveChangesAsync(); 
+            await _context.SaveChangesAsync();
             return Ok(searchMeet);
         }
 
