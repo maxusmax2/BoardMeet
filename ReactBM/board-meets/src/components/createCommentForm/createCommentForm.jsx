@@ -11,12 +11,12 @@ import { getUser } from "../../helpers/getUser";
 import axios from "axios";
 import { getConfig } from "../../helpers/getConfig";
 
-export const CreateCommentForm = ({ clickHandler ,gameId, url}) => {
+export const CreateCommentForm = ({ clickHandler ,gameId, url, addComment}) => {
   const { register, handleSubmit, formState: { errors } } = useForm();
   const user = getUser();
   const [rating, setRating] = useState(3);
 
-  const formHandler = (data) => {
+  const addHandler = (data) => {
     const _data = {
       ...data,
       rating: rating
@@ -33,7 +33,7 @@ export const CreateCommentForm = ({ clickHandler ,gameId, url}) => {
       "gameId": gameId
     };
     axios.post(url + `BoardGames/CreateComment`, body, getConfig())
-      .then(() =>window.location.reload())
+      .then((resp) =>addComment(resp.data))
       .catch((err) => {
         if (err.response) { console.log("a"); }
         else if (err.request) { console.log("b"); }
@@ -45,7 +45,7 @@ export const CreateCommentForm = ({ clickHandler ,gameId, url}) => {
     setRating(newRating);
   }
   return (
-    <form className={style.form} onSubmit={handleSubmit(formHandler)}>
+    <form className={style.form} onSubmit={handleSubmit(addHandler)}>
       <div className={style.header}>
         <div className={style.inputs}>
           <ReactStars
