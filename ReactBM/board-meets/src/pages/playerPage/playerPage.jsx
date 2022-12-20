@@ -8,7 +8,7 @@ import style from "./playerPage.module.css";
 export const PlayerPage = ({ url }) => {
 
   let { userId } = useParams();
-  const [typeMeet, setTypeMeet] = useState({ type: "Created", url: url + "Users/CreatedMeet/" + userId });
+  const [typeMeet, setTypeMeet] = useState({ type: "Created", url: url + "Meets/CreatedMeet/" + userId });
 
   let linkAdd = null;
 
@@ -20,10 +20,10 @@ export const PlayerPage = ({ url }) => {
   const radioHandler = (value) => {
     switch (value) {
       case "1":
-        setTypeMeet({ type: "Created", url: url + "Users/CreatedMeet/" + userId });
+        setTypeMeet({ type: "Created", url: url + "Meets/CreatedMeet/" + userId });
         break;
       case "2":
-        setTypeMeet({ type: "Joined", url: url + "Users/JoinedMeet/" + userId });
+        setTypeMeet({ type: "Joined", url: url + "Meets/JoinedMeet/" + userId });
         break;
     }
   }

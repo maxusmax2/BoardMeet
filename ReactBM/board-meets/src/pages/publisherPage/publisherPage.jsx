@@ -8,7 +8,7 @@ import style from "./publisherPage.module.css";
 export const PublisherPage = ({ url }) => {
 
   let { userId } = useParams();
-  const games = useDataGet(url + "Users/CreatedBoardGames/" + userId);
+  const games = useDataGet(url + "Meets/CreatedBoardGames/" + userId);
   return (
     <>
       <div className={style.titleContainer}>
