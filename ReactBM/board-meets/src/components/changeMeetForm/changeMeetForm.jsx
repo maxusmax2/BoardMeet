@@ -74,8 +74,8 @@ export const ChangeMeetForm = ({ url, meet }) => {
             <input type="text" id="name" className={style.input} placeholder="Название мероприятия" {...register("name", {
               required: "введите название мероприятия",
               maxLength: {
-                value: 12,
-                message: "макс.длина-12"
+                value: 20,
+                message: "макс.длина-20"
               },
               minLength: {
                 value: 5,
@@ -85,7 +85,7 @@ export const ChangeMeetForm = ({ url, meet }) => {
             {errors?.name && <p className="error">{errors.name.message}</p>}
           </div>
 
-          <label className={style.inputLabel} htmlFor="playersTime">Кол-во игроков и продолжительность(ч.)</label>
+          <label className={style.inputLabel} htmlFor="playersTime">Кол-во игроков и продолжительность(мин.)</label>
           <div className={style.playersTime} id="playersTime">
             <div className={style.inputPlayers}>
               <label className={style.inputIcon} id="players"><LightPlayers /></label>
@@ -115,12 +115,12 @@ export const ChangeMeetForm = ({ url, meet }) => {
                   message: "введите число"
                 },
                 max: {
-                  value: 14,
-                  message: "макс.значение-14"
+                  value: 1200,
+                  message: "макс.значение-1200"
                 },
                 min: {
-                  value: 0.5,
-                  message: "мин.значение-0.5"
+                  value: 10,
+                  message: "мин.значение-10"
                 }
               })} />
               {errors?.maxTime && <p className="error">{errors.maxTime.message}</p>}
