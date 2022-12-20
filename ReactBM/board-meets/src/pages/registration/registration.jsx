@@ -1,12 +1,11 @@
 import { useNavigate, NavLink } from "react-router-dom";
 import style from "./registration.module.css";
-import { Back, Write } from "../../components/icons/icons";
 import { useForm } from 'react-hook-form';
 import axios from "axios";
 import { RegistrationFirstStep } from "../../components/registrationFirstStep/registrationFirstStep";
 import { useState } from "react";
 import { RegistrationSecondStep } from "../../components/registrationSecondStep copy/registrationSecondStep";
-import { getConfig } from "../../helpers/getConfig";
+
 
 
 export const Registration = ({ url, buttonHandler }) => {

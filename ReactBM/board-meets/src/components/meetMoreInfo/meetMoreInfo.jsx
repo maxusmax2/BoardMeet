@@ -3,14 +3,14 @@ import { Change, Communication, LightMaxTime, Participants } from "../icons/icon
 import { NavLink } from "react-router-dom";
 import { MeetButton } from "../meetButton/meetButton";
 import { getUser } from "../../helpers/getUser";
-export const MeetMoreInfo = ({ meet, url }) => {
+export const MeetMoreInfo = ({ meet, url}) => {
   const user = getUser();
   let playersIdList = meet.players.length && meet.players.map((player) => player.id);
 
   let linkChange = null;
   let gameList = JSON.parse(meet.games);
 
-  if (user.id == meet.authorId) {
+  if (user?.id == meet.authorId) {
     linkChange = <NavLink to={`/user/${meet.authorId}/changeMeet/${meet.id}`} className={style.linkChange}><Change /></NavLink>
   }
 
@@ -45,7 +45,7 @@ export const MeetMoreInfo = ({ meet, url }) => {
           <li className={style.infoItem} key={player.id}><NavLink to={playersIdList?.includes(user.id) ? `/user/${player.id}/${player.role}` : `/user/${player.id}`}>@{player.userName}</NavLink></li>
         ) : <li className={style.infoItem}>Участников пока нет(</li>}
       </ul>
-      <MeetButton meet={meet} url={url} />
+      <MeetButton meet={meet} url={url}/>
     </section>
   );
 }
