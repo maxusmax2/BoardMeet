@@ -3,10 +3,12 @@ import style from "./logIn.module.css";
 import { Back, Write } from "../../components/icons/icons";
 import { useForm } from 'react-hook-form';
 import axios from "axios";
+import { useState } from "react";
 
 export const LogIn = ({ buttonHandler, url }) => {
   const { register, handleSubmit, formState: { errors } } = useForm();
   const navigate = useNavigate();
+  const [errMes, setErrMes] = useState(null);
 
   const onSubmit = (data) => {
     const body = { email: data.email, password: data.password };
@@ -16,9 +18,7 @@ export const LogIn = ({ buttonHandler, url }) => {
       })
       .then(() => navigate("/"))
       .catch((err) => {
-        if (err.response) { console.log("a"); }
-        else if (err.request) { console.log("b"); }
-        else { console.log("c"); }
+        if (err.response) { setErrMes(<p class="error">Неверный пароль или логин </p>) }
       });
   };
 
@@ -47,12 +47,13 @@ export const LogIn = ({ buttonHandler, url }) => {
           </div>
           <div className={style.formInput}>
             <label className={style.mandatoryLabel}>Обязательно</label>
-            <input type="password" className={style.input} placeholder=" " {...register("password", {
+            <input type="password" className={style.input} autoComplete="off" placeholder=" " {...register("password", {
               required: "введите свой пароль"
             })} />
             {errors?.password && <p className="error">{errors.password.message}</p>}
             <label className={style.swimLabel}>Пароль</label>
           </div>
+          {errMes}
           <input type="submit" className={style.formButton} value="Вход"></input>
           <div className={style.links}>
             <NavLink to="/" className={style.navLink}><Back />Продолжить без регистрации</NavLink>
