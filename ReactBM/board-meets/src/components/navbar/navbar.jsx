@@ -23,7 +23,10 @@ export const Navbar = ({ exitHandler }) => {
   }
 
   const searchHandler = () => {
+    if(search){
     navigate(`/search/${search}`);
+    }
+    else navigate(`/search/null`);
   }
 
   return (
@@ -39,8 +42,8 @@ export const Navbar = ({ exitHandler }) => {
       </div>
 
       <div className={style.linkList}>
-        <NavLink to="/" className={style.linkListLink} >Мероприятия</NavLink>
-        <NavLink to="/games" className={style.linkListLink}>Игры</NavLink>
+        <NavLink to="/" className={({isActive})=>isActive?style.linkActive:style.linkListLink} >Мероприятия</NavLink>
+        <NavLink to="/games" className={({isActive})=>isActive?style.linkActive:style.linkListLink}>Игры</NavLink>
       </div>
 
       {buttonLink}
