@@ -1,17 +1,14 @@
 import { useState } from "react";
 import { NavLink, useParams } from "react-router-dom";
 import { AddButton } from "../../components/addButton/addButton";
-import { MeetCard } from "../../components/meetCard/meetCard";
+import { MeetList } from "../../components/meetList/meetList";
 import { Switch } from "../../components/switch/switch";
-import { useDataGet } from "../../hooks/useDataGet";
 import style from "./playerPage.module.css";
 
 export const PlayerPage = ({ url }) => {
 
   let { userId } = useParams();
   const [typeMeet, setTypeMeet] = useState({ type: "Created", url: url + "Users/CreatedMeet/" + userId });
-
-  const meets = useDataGet(typeMeet.url);
 
   let linkAdd = null;
 
@@ -35,13 +32,8 @@ export const PlayerPage = ({ url }) => {
       <div className={style.switch}>
         <Switch radioHandler={radioHandler} />
       </div>
-
       {linkAdd}
-      <ul className={style.meetsList}>
-        {!!meets?.length && meets.map((meet) =>
-          <li key={meet.id} className={style.meetsItem}><MeetCard meet={meet} userId={userId} url={url} /></li>
-        )}
-      </ul>
+      <MeetList meetUrl={typeMeet.url} url={url} />
     </>
   );
 }
