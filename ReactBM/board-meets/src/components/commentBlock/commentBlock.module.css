@@ -8,15 +8,21 @@
   display: flex;
 }
 
-.commentItem:nth-child(2n) {
+.commentItem:nth-child(even) {
   justify-content: flex-end;
 }
 
 .notComment {
-  font-weight: 400;
   font-size: 25px;
-  line-height: 100%;
-  letter-spacing: -0.05em;
+  color: #057402;
   margin:20px 0;
   text-align: center;
+}
+.title{
+  margin-top: 65px;
+}
+.button{
+  display: flex;
+  justify-content: flex-end;
+  margin: 36px 0;
 }

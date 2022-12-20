@@ -5,11 +5,3 @@
 .articleItem{
   margin-top:45px;
 }
-.title{
-  margin-top: 65px;
-}
-.button{
-  display: flex;
-  justify-content: flex-end;
-  margin-top: 36px;
-}
