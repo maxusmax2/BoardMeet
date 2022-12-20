@@ -5,7 +5,6 @@ import { useNavigate, useParams } from "react-router-dom";
 import { FilterGames } from "../../components/filterGames/filterGames";
 import { GameCard } from "../../components/gameCard/gameCard";
 import { getConfig } from "../../helpers/getConfig";
-import { useDataGet } from "../../hooks/useDataGet";
 import style from "./gamesList.module.css";
 
 export const GamesList = ({ url }) => {
@@ -42,6 +41,10 @@ export const GamesList = ({ url }) => {
       })
     navigate("/games");
   }
+  const delGame = (game) => {
+    setGames(games.filter(elem => elem.id !== game.id));
+  }
+
   return (
     <div className={style.container}>
       <div className={style.filter}>
@@ -49,9 +52,9 @@ export const GamesList = ({ url }) => {
       </div>
 
       <ul className={style.gameList}>
-        {!!games?.length && games.map((game) =>
-          <li key={game?.id} className={style.meetsItem}><GameCard url={url} game={game} /></li>
-        )}
+        {!!games?.length ? games.map((game) =>
+          <li key={game?.id} className={style.gamesItem}><GameCard url={url} game={game} delGame={delGame} /></li>
+        ) : <p className={style.notFound}>Игры не найдены 👽</p>}
       </ul>
     </div>
   );
