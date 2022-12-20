@@ -1,16 +1,30 @@
+import axios from "axios";
 import { NavLink } from "react-router-dom";
+import { getConfig } from "../../helpers/getConfig";
 import { getUser } from "../../helpers/getUser";
-import { Age, Players, Rating, TimeBold, Сomplexity } from "../icons/icons";
+import { Age, Close, Players, Rating, TimeBold, Сomplexity } from "../icons/icons";
 import style from "./comment.module.css";
 
-export const Comment = ({comment}) => {
+export const Comment = ({ comment, delComment, url }) => {
   const user = getUser();
+
+  const delHandler = () =>{
+    axios.delete(url + "BoardGames/DeleteComment/" + comment.id, getConfig())
+    .then(() => delComment(comment))
+    .catch((err) => {
+      if (err.response) { console.log("a"); }
+      else if (err.request) { console.log("b"); }
+      else { console.log("c"); }
+    });
+  }
+
   return (
     <div className={style.container}>
       <div className={style.commentBody}>
         <img src="/assets/images/background.png" alt="author" />
-        <NavLink to={`/user/${user.id}`} className={style.author}>@{comment.author.userName}</NavLink>
+        <NavLink to={`/user/${user.id}`} className={style.author}>@{comment.author?.userName}</NavLink>
         <ul className={style.rating}>
+          {user.role=="admin"?<button className={style.delButton} onClick={delHandler}><Close width="8" height="8" /></button>:null}
           <li className={style.ratingItem}>
             <span>{comment.rating}</span>
             <Rating />
