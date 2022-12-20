@@ -14,10 +14,11 @@
   margin-top: 35px;
 }
 
-.meetsItem:last-child {
+.meetsItem:first-child {
   margin-bottom: 35px;
 }
-.inputText{
+
+.inputText {
   background: #FFFFFF;
   box-shadow: inset 0px 1px 5px rgba(0, 0, 0, 0.25);
   border-radius: 9px;
@@ -26,16 +27,18 @@
   border: 0;
   font-weight: 400;
   font-size: 15px;
-  line-height: 100%;  
+  line-height: 100%;
   color: #9E9A9A;
   box-sizing: border-box;
   padding: 0 26px 0 10px;
 }
-.inputText:focus{
+
+.inputText:focus {
   outline: 3px solid #057402;
 
 }
-.filter{
+
+.filter {
   display: flex;
   background-color: #64C661;
   width: inherit;
@@ -47,36 +50,42 @@
   padding: 0 23px;
   justify-content: space-between;
 }
-.inputContainer{
+
+.inputContainer {
   display: flex;
 }
-.inputCity{
+
+.inputCity {
   position: relative;
   margin-right: 20px;
 }
-.button{
+
+.button {
   background: #EDFFEC;
   box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.25);
   border-radius: 66px;
   width: 84px;
   height: 29px;
-  color:#64C661;
+  color: #64C661;
   font-weight: 400;
   font-size: 16px;
   line-height: 100%;
   border: 0;
 }
-.button:active{
+
+.button:active {
   background: #d3e8d2;
   box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.25);
-  
+
 }
-.inputIcon{
+
+.inputIcon {
   position: absolute;
-  top:4px;
+  top: 4px;
   right: 4px;
 }
-.date{
+
+.date {
   background-color: #FFFFFF;
   box-shadow: inset 0px 2px 5px rgba(0, 0, 0, 0.25);
   border-radius: 9px;
@@ -87,16 +96,24 @@
   padding: 7px;
   font-weight: 400;
   font-size: 15px;
-  line-height: 100%;  
+  line-height: 100%;
   color: black;
- 
+
 }
-.date:focus{
+
+.date:focus {
   outline: 3px solid #057402;
 }
+
 .date::-webkit-calendar-picker-indicator {
- opacity: 0;
+  opacity: 0;
 }
-.inputDate{
+
+.inputDate {
   position: relative;
+}
+
+.notFound{
+  font-size: 25px;
+  color: #057402;
 }
