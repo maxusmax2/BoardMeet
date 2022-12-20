@@ -56,8 +56,8 @@ export const CreateMeetForm = ({ userId, url }) => {
             <input type="text" id="name" className={style.input} placeholder="Название мероприятия" {...register("name", {
               required: "введите название мероприятия",
               maxLength: {
-                value: 12,
-                message: "макс.длина-12"
+                value: 20,
+                message: "макс.длина-20"
               },
               minLength: {
                 value: 5,
@@ -101,8 +101,8 @@ export const CreateMeetForm = ({ userId, url }) => {
                   message: "макс.значение-1200"
                 },
                 min: {
-                  value: 0.5,
-                  message: "мин.значение-0.5"
+                  value: 10,
+                  message: "мин.значение-10"
                 }
               })} />
               {errors?.maxTime && <p className="error">{errors.maxTime.message}</p>}
@@ -145,8 +145,8 @@ export const CreateMeetForm = ({ userId, url }) => {
             <input type="text" id="location" className={style.input} placeholder="ул.Лакина, д.171, кв. 15"  {...register("location", {
               required: "напишите место",
               maxLength: {
-                value: 25,
-                message: "макс.длина-25"
+                value: 35,
+                message: "макс.длина-35"
               }
             })} />
             {errors?.location && <p className="error">{errors.location.message}</p>}
