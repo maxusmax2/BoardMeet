@@ -141,6 +141,7 @@
 }
 
 .button {
+  cursor: pointer;
   margin-top: 20px;
   background: #64C661;
   border-radius: 66px 66px;

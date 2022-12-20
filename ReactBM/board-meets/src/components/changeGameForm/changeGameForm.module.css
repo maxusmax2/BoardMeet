@@ -154,6 +154,7 @@
 
 .deleteButton,
 .changeButton {
+    cursor: pointer;
     font-weight: 400;
     font-size: 19px;
     line-height: 100%;

@@ -107,6 +107,7 @@
 }
 
 .formButton {
+  cursor: pointer;
   width: 317px;
   height: 46px;
   background: #292929;

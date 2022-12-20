@@ -29,6 +29,7 @@
 }
 
 .searchButton {
+    cursor: pointer;
     width: 62px;
     height: 38px;
     border: none;
@@ -38,7 +39,6 @@
 
 .searchButton:active {
     background-color: #5bb758;
-
 }
 
 .linkList {
@@ -46,7 +46,8 @@
     height: 100%;
 }
 
-.linkListLink {
+.linkListLink,
+.linkActive {
     display: inline-flex;
     font-size: 25px;
     font-weight: 300;
@@ -56,6 +57,7 @@
     justify-content: center;
 }
 
+.linkActive,
 .linkListLink:hover {
     background-color: #C8FEC7;
 }
