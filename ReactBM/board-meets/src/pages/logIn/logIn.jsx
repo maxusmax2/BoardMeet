@@ -57,7 +57,7 @@ export const LogIn = ({ buttonHandler, url }) => {
           <input type="submit" className={style.formButton} value="Вход"></input>
           <div className={style.links}>
             <NavLink to="/" className={style.navLink}><Back />Продолжить без регистрации</NavLink>
-            <NavLink to="/registration" className={style.navLink}><Write fill="black" width="13" height="13" />Регистрация</NavLink>
+            <NavLink to="/registration" className={style.navLink}><Write stroke="black" width="13" height="13" />Регистрация</NavLink>
           </div>
         </form>
       </div>

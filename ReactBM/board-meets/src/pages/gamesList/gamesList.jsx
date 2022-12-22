@@ -20,7 +20,7 @@ export const GamesList = ({ url }) => {
           .then((resp) => { setGames(resp.data) })
           .catch((er) => console.log(er))
       }
-    }, [gameName])
+    }, [gameName, url])
 
   if (!games) {
     axios.get(url + "BoardGames")

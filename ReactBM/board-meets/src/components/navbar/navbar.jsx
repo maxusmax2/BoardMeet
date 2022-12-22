@@ -24,9 +24,9 @@ export const Navbar = ({ exitHandler }) => {
 
   const searchHandler = () => {
     if(search){
-    navigate(`/search/${search}`);
+    navigate(`/games/${search}`);
     }
-    else navigate(`/search/null`);
+    else navigate(`/games/null`);
   }
 
   return (

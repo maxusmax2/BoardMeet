@@ -3,11 +3,16 @@ import { NavLink, useParams } from "react-router-dom";
 import { AddButton } from "../../components/addButton/addButton";
 import { MeetList } from "../../components/meetList/meetList";
 import { Switch } from "../../components/switch/switch";
+import { getUser } from "../../helpers/getUser";
+import { useCheckAuthorization } from "../../hooks/useCheckAuthorization";
 import style from "./playerPage.module.css";
 
 export const PlayerPage = ({ url }) => {
 
   let { userId } = useParams();
+  const user = getUser();
+  useCheckAuthorization(user?.id, userId)
+
   const [typeMeet, setTypeMeet] = useState({ type: "Created", url: url + "Meets/CreatedMeet/" + userId });
 
   let linkAdd = null;
