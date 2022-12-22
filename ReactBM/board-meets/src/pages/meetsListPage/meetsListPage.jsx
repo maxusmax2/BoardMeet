@@ -45,9 +45,9 @@ export const MeetsListPage = ({ url }) => {
       <div className={style.container}>
         <FilterMeets register={register} handleSubmit={handleSubmit} searchHandler={searchHandler} />
         <ul className={style.meetsList}>
-          {!!meets?.length && meets.map((meet) =>
+          {!!meets?.length? meets.map((meet) =>
             <li key={meet.id} className={style.meetsItem}><MeetCard url={url} meet={meet} /></li>
-          )}
+          ): <p className={style.notFound}>Мероприятия не найдены 👽</p>}
         </ul>
       </div>
     </MeetsContext.Provider>
