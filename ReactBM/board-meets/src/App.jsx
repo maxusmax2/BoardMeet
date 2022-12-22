@@ -41,7 +41,7 @@ export const App = () => {
         <Route path="/" exact element={<MainLayout exitHandler={exitHandler}/>}>
           <Route path="/" element={<MeetsListPage url = {url} />}/>
           <Route path="/games" element={<GamesList url={url}/>}/>
-          <Route path="/search/:gameName" element={<GamesList url={url}/>}/>
+          <Route path="/games/:gameName" element={<GamesList url={url}/>}/>
           <Route path="/game/:gameId" element={<GamePage url={url}/>}/>
           <Route path="/user/:userId" element={<UserPageLayout url = {url}/>}>
             <Route path="createMeet" element={<CreateMeetPage url ={url}/>}/>
