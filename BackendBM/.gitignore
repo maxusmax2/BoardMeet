@@ -3,4 +3,5 @@ BoardMeet/bin
 *.v*
 BoardMeet/obj
 *.vsidx
-BackendBM/BoardMeet/.vs
+BoardMeet\.vs
+BoardMeet\obj\Debug

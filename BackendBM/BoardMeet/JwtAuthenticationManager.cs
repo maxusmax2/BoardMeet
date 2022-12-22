@@ -1,10 +1,10 @@
 ﻿using BoardMeet.Models;
+using BoardMeet.UserException;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using System.Linq;
-using BoardMeet.UserException;
+
 
 namespace BoardMeet
 {
@@ -12,30 +12,22 @@ namespace BoardMeet
     {
         private readonly string key;
 
+
         public JwtAuthenticationManager(string key)
         {
             this.key = key;
         }
 
-        public string Authenticate(User user)
+        public string Authenticate(User user, string password)
         {
 
-            using (ApplicationContext db = new ApplicationContext())
+            bool verify = BCrypt.Net.BCrypt.Verify(password, user.Password);
+
+            if (!verify)
             {
-                User authUser = db.Users.Where(x => x.Email == user.Email).FirstOrDefault();
-                if (authUser == null)
-                {
-                    throw new AuthenticateException("Юзера с таким именем нет");
-                }
-
-                bool verify = BCrypt.Net.BCrypt.Verify(user.Password, authUser.Password);
-
-                if (!verify) 
-                {
-                    throw new AuthenticateException("Не верный пароль");
-                }
-
+                throw new AuthenticateException("Не верный пароль");
             }
+
             JwtSecurityTokenHandler tokenHandler = new JwtSecurityTokenHandler();
             var tokenKey = Encoding.ASCII.GetBytes(key);
 
@@ -44,9 +36,11 @@ namespace BoardMeet
                 Subject = new ClaimsIdentity(new Claim[]
                 {
                     new Claim(ClaimTypes.Email, user.Email),
-                    new Claim(ClaimTypes.Role, user.Role)
+                    new Claim(ClaimTypes.Role, user.Role),
+                    new Claim("Id", user.Id.ToString())
+
                 }),
-                Expires = DateTime.UtcNow.AddHours(1),
+                Expires = DateTime.UtcNow.AddHours(24),
                 SigningCredentials = new SigningCredentials(
                     new SymmetricSecurityKey(tokenKey),
                     SecurityAlgorithms.HmacSha256Signature)

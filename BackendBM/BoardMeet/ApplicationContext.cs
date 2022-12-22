@@ -1,5 +1,6 @@
 ﻿using BoardMeet.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection.Metadata;
 
 namespace BoardMeet
 {
@@ -9,17 +10,22 @@ namespace BoardMeet
         public DbSet<BoardGame> BoardGames { get; set; }
         public DbSet<Meet> Meets { get; set; }
         public DbSet<Comment> Comments { get; set; }
-        public ApplicationContext()
+        public ApplicationContext(DbContextOptions<ApplicationContext> options) : base(options)
         {
-            Database.EnsureDeleted();//Не на релиз!!!!!!!!!!!!!!!!!!!
+
+            //Database.EnsureDeleted();//Не на релиз
             Database.EnsureCreated();
+
         }
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            optionsBuilder.UseMySql(
-                "server=localhost;user=root;password=root;database=boardmeet;",
-                new MySqlServerVersion(new Version(8, 0, 30))
-            );
+            modelBuilder.Entity<Meet>()
+                .HasOne(p => p.Author)
+                .WithMany(b => b.CreatedMeets);
+            modelBuilder.Entity<Meet>()
+               .HasMany(p => p.Players)
+               .WithMany(b => b.JoinedMeets);
+            
         }
     }
 }

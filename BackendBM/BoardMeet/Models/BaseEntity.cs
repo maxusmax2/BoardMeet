@@ -1,10 +1,7 @@
-﻿using System.Text.Json.Serialization;
-
-namespace BoardMeet.Models
+﻿namespace BoardMeet.Models
 {
     public class BaseEntity
     {
-        
-        public int Id { get; set; }
+        public int? Id { get; set; }
     }
 }
