@@ -24,7 +24,7 @@ namespace BoardMeet.Models
 
         public  User? Author { get; set; }
 
-        //[InverseProperty(nameof(User.JoinedMeets))]
+       
         public virtual ICollection<User>? Players { get; set; }
         public Meet() { }
         public Meet(MeetCreateDTO dto)

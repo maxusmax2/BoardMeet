@@ -107,7 +107,7 @@ namespace BoardMeet.Controllers
         // POST api/<MeetController>
         [HttpPost]
         [Authorize(Roles = "player,organization")]
-        public async Task<IActionResult> Create([FromBody] MeetCreateDTO meet)
+        public async Task<IActionResult> PostMeet([FromBody] MeetCreateDTO meet)
         {
             string? error = Utils.AccessVerification(meet.AuthorId, HttpContext.User.Identity as ClaimsIdentity);
             if (error != null)
@@ -126,7 +126,7 @@ namespace BoardMeet.Controllers
         // POST api/<MeetController>
         [HttpPut("{id}")]
         [Authorize(Roles = "player,organization")]
-        public async Task<IActionResult> Edit([FromBody] MeetChangeDTO meet, int id)
+        public async Task<IActionResult> PutMeet([FromBody] MeetChangeDTO meet, int id)
         {
             var meetChange = await _context.Meets.FindAsync(id);
             if (meetChange == null)
@@ -189,8 +189,9 @@ namespace BoardMeet.Controllers
             }
 
             var meet = await _context.Meets
-                .Include(m => m.Players)
                 .Where(m => m.Id == meetId)
+                .Include(m => m.Players)
+                .Include(m => m.Author)
                 .FirstOrDefaultAsync();
             if (meet == null)
             {
@@ -230,8 +231,9 @@ namespace BoardMeet.Controllers
                 return NotFound();
             }
             var meet = await _context.Meets
-                .Include(m => m.Players)
                 .Where(m => m.Id == meetId)
+                .Include(m => m.Players)
+                .Include(m => m.Author)
                 .FirstOrDefaultAsync();
             if (meet == null)
             {
@@ -253,10 +255,14 @@ namespace BoardMeet.Controllers
         // DELETE api/<MeetController>/5
         [HttpDelete("{id}")]
         [Authorize(Roles = "player,organization")]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> DeleteMeet(int id)
         {
 
             var m = await _context.Meets.FindAsync(id);
+            if(m == null) 
+            {
+                return BadRequest("Комментария не существует");
+            }
             if (m.Removed())
             {
 
@@ -277,9 +283,13 @@ namespace BoardMeet.Controllers
         }
         [HttpPost("Lock/{id}")]
         [Authorize(Roles = "player,organization")]
-        public async Task<IActionResult> Lock(int id)
+        public async Task<IActionResult> LockMeet(int id)
         {
-            Meet meet = await _context.Meets.FirstOrDefaultAsync(m => m.Id == id);
+            Meet meet = await _context.Meets
+                .Where(m => m.Id == id)
+                .Include(m => m.Players)
+                .Include(m => m.Author)
+                .FirstOrDefaultAsync();
             if (meet != null)
             {
                 string? error = Utils.AccessVerification(meet.AuthorId, HttpContext.User.Identity as ClaimsIdentity);
@@ -290,16 +300,20 @@ namespace BoardMeet.Controllers
                 if (meet.Lock())
                 {
                     await _context.SaveChangesAsync(true);
-                    return Ok();
+                    return Ok(meet);
                 }
             }
             return BadRequest();
         }
         [HttpPost("Open/{id}")]
         [Authorize(Roles = "player,organization")]
-        public async Task<IActionResult> Open(int id)
+        public async Task<IActionResult> OpenMeet(int id)
         {
-            Meet meet = await _context.Meets.FirstOrDefaultAsync(m => m.Id == id);
+            Meet meet = await _context.Meets
+                .Where(m => m.Id == id)
+                .Include(m => m.Players)
+                .Include(m => m.Author)
+                .FirstOrDefaultAsync();
             if (meet != null)
             {
                 string? error = Utils.AccessVerification(meet.AuthorId, HttpContext.User.Identity as ClaimsIdentity);
@@ -310,7 +324,7 @@ namespace BoardMeet.Controllers
                 if (meet.Open())
                 {
                     await _context.SaveChangesAsync(true);
-                    return Ok();
+                    return Ok(meet);
                 }
             }
             return BadRequest();
@@ -358,9 +372,58 @@ namespace BoardMeet.Controllers
                 meet.RefreshState();
             }
             await _context.SaveChangesAsync();
-            return Ok(searchMeet);
+            return Ok(searchMeet.Where(m => m.Visibility()));
+        }
+        [AllowAnonymous]
+        [HttpGet("JoinedMeet/{id}")]
+        public async Task<IActionResult> GetJoinedMeet(int id)
+        {
+            var user = await _context.Users
+                .Include(u => u.JoinedMeets)
+                .ThenInclude(u => u.Players)
+                .Include(u => u.JoinedMeets)
+                .ThenInclude(u => u.Author)
+                .Where(u => u.Id == id)
+                .FirstOrDefaultAsync();
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            foreach (Meet meet in user.JoinedMeets)
+            {
+                meet.RefreshState();
+            }
+            await _context.SaveChangesAsync();
+
+            return Ok(user.JoinedMeets);
         }
 
+        [AllowAnonymous]
+        [HttpGet("CreatedMeet/{id}")]
+        public async Task<IActionResult> GetCreatedMeet(int id)
+        {
+            var user = await _context.Users
+            .Include(u => u.CreatedMeets)
+            .ThenInclude(u => u.Players)
+            .Include(u => u.CreatedMeets)
+            .ThenInclude(u => u.Author)
+            .Where(u => u.Id == id)
+            .FirstOrDefaultAsync();
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            foreach (Meet meet in user.CreatedMeets)
+            {
+                meet.RefreshState();
+            }
+            await _context.SaveChangesAsync();
+
+            return Ok(user.CreatedMeets);
+        }
         private bool MeetExists(int id)
         {
             return _context.Meets.Any(e => e.Id == id);

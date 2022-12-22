@@ -14,13 +14,8 @@ namespace BoardMeet.Models
         public string AvatarUrl { get; set; }
         public string City { get; set; }
         public string AboutMe { get; set; }
-        //[InverseProperty(nameof(BoardGame.Author))]
         public virtual ICollection<BoardGame>? CreateBoardGames { get; set; }
-
-        //[InverseProperty(nameof(Meet.Players))]
         public virtual ICollection<Meet>? JoinedMeets { get; set; }
-
-        //[InverseProperty(nameof(Meet.Author))]
         public virtual ICollection<Meet>? CreatedMeets { get; set; }
         public User() { }
         public User(UserCreateDTO dto)

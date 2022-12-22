@@ -1,13 +1,11 @@
-﻿using BoardMeet.Models;
-using BoardMeet.UserException;
+﻿using BoardMeet.UserException;
 using System.Security.Claims;
-using System.Security.Principal;
 
 namespace BoardMeet
 {
     public static class Utils
     {
-        public static string AccessVerification(int id, ClaimsIdentity identity) 
+        public static string AccessVerification(int id, ClaimsIdentity identity)
         {
             try
             {
@@ -24,7 +22,7 @@ namespace BoardMeet
             return null;
         }
 
-        private static void CheckAccess(int id, ClaimsIdentity identity )
+        private static void CheckAccess(int id, ClaimsIdentity identity)
         {
             if (identity != null)
             {

@@ -1,10 +1,8 @@
 ﻿using BoardMeet.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Xml.Linq;
-using System;
-using Microsoft.AspNetCore.Authorization;
-using BoardMeet.UserException;
+using System.Collections.Immutable;
 using System.Security.Claims;
 
 namespace BoardMeet.Controllers
@@ -25,10 +23,10 @@ namespace BoardMeet.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<BoardGame>>> GetBoardGames()
         {
-            List<BoardGame> boardGames =await _context.BoardGames
+            List<BoardGame> boardGames = await _context.BoardGames
                 .Include(bg => bg.Author)
                 .ToListAsync();
-            foreach(BoardGame bg in boardGames) 
+            foreach (BoardGame bg in boardGames)
             {
                 bg.RoundUserRating();
             }
@@ -56,14 +54,14 @@ namespace BoardMeet.Controllers
         // PUT: api/BoardGames/5
         [HttpPut("{id}")]
         [Authorize(Roles = "publisher")]
-        public async Task<IActionResult> PutBoardGame(int id, [FromForm]BoardGameChangeDTO boardGame)
+        public async Task<IActionResult> PutBoardGame(int id, [FromForm] BoardGameChangeDTO boardGame)
         {
             BoardGame boardGameChange = await _context.BoardGames.FirstAsync(x => x.Id == id);
 
             string? error = Utils.AccessVerification(boardGameChange.AuthorId, HttpContext.User.Identity as ClaimsIdentity);
             if (error != null)
             {
-                BadRequest(error);
+                return BadRequest(error);
             }
 
             if (boardGameChange == null)
@@ -71,7 +69,8 @@ namespace BoardMeet.Controllers
                 return BadRequest();
             }
 
-            if (boardGame.avatarGame != null) {
+            if (boardGame.avatarGame != null)
+            {
                 string filetypeImage;
                 if (boardGame.avatarGame.ContentType != null)
                 {
@@ -89,22 +88,22 @@ namespace BoardMeet.Controllers
                     return BadRequest("Файл пуст");
                 }
                 var imageNameUnique = System.Guid.NewGuid().ToString() + filetypeImage;
-                if (boardGame.avatarGame.Length > 0) 
+                if (boardGame.avatarGame.Length > 0)
                 {
                     string imagePath = Path.Combine(_appEnvironment.WebRootPath + "/static/BoardGame/images", imageNameUnique);
                     using (Stream fileStream = new FileStream(imagePath, FileMode.Create))
                     {
                         await boardGame.avatarGame.CopyToAsync(fileStream);
                     }
-                    boardGameChange.GameAvatar  = "static/BoardGame/images/" + imageNameUnique;
+                    boardGameChange.GameAvatar = "static/BoardGame/images/" + imageNameUnique;
                 }
                 else
                 {
-                    BadRequest("Файл с картинкой пуст");
+                    return BadRequest("Файл с картинкой пуст");
                 }
             }
 
-            if(boardGame.rule !=null)
+            if (boardGame.rule != null)
             {
                 if (boardGame.rule.ContentType != null)
                 {
@@ -128,15 +127,15 @@ namespace BoardMeet.Controllers
                     }
                     boardGameChange.Rule = "static/BoardGame/rule/" + ruleNameUnique; ;
                 }
-                else 
+                else
                 {
-                    BadRequest("Файл с правилами пуст");
+                    return BadRequest("Файл с правилами пуст");
                 }
             }
 
 
             boardGameChange.Change(boardGame);
-            
+
             _context.Entry(boardGameChange).State = EntityState.Modified;
 
             try
@@ -168,7 +167,7 @@ namespace BoardMeet.Controllers
             string? error = Utils.AccessVerification(boardGame.AuthorId, HttpContext.User.Identity as ClaimsIdentity);
             if (error != null)
             {
-                BadRequest(error);
+                return BadRequest(error);
             }
 
             if (boardGame.avatarGame.ContentType != null)
@@ -229,16 +228,17 @@ namespace BoardMeet.Controllers
 
             boardGameCreate.GameAvatar = avatarPath;
             boardGameCreate.Rule = gameRulePath;
-           
+
             _context.BoardGames.Add(boardGameCreate);
             await _context.SaveChangesAsync();
-            
+
             return CreatedAtAction("GetBoardGame", new { id = boardGameCreate.Id }, boardGameCreate);
-            
+
         }
 
+
         [HttpDelete("{id}")]
-        [Authorize(Roles ="publisher")]
+        [Authorize(Roles = "publisher,admin")]
         public async Task<IActionResult> DeleteBoardGame(int id)
         {
             var boardGame = await _context.BoardGames.FindAsync(id);
@@ -246,7 +246,7 @@ namespace BoardMeet.Controllers
             string? error = Utils.AccessVerification(boardGame.AuthorId, HttpContext.User.Identity as ClaimsIdentity);
             if (error != null)
             {
-                BadRequest(error);
+               return BadRequest(error);
             }
 
             _context.BoardGames.Remove(boardGame);
@@ -256,17 +256,16 @@ namespace BoardMeet.Controllers
         }
 
         [HttpPost("CreateComment")]
-        [Authorize(Roles ="player")]
+        [Authorize(Roles = "player")]
         public async Task<ActionResult<Comment>> PostComment(CommentCreateDTO comment)
         {
-            string? error = Utils.AccessVerification(comment.AuthorId, HttpContext.User.Identity as ClaimsIdentity);
-            if (error != null) 
+           string? error = Utils.AccessVerification(comment.AuthorId, HttpContext.User.Identity as ClaimsIdentity);
+            if (error != null)
             {
-                BadRequest(error);
+                return BadRequest(error);
             }
 
             Comment commentCreate = new Comment(comment);
-            
             _context.Comments.Add(commentCreate);
             await _context.SaveChangesAsync();
 
@@ -274,7 +273,24 @@ namespace BoardMeet.Controllers
             commentGame.AddRaitingData(commentCreate);
             await _context.SaveChangesAsync();
 
-            return Ok(commentCreate);
+            return Ok(await _context.Comments
+                .Where(x => x.Id == commentCreate.Id)
+                .Include(c => c.Author)
+                .FirstOrDefaultAsync());
+        }
+        [HttpGet("Comments/{id}")]
+        public async Task<ActionResult<IEnumerable<BoardGame>>> GetComment(int id)
+        {
+            var bg = await _context.BoardGames
+                .Where(x => x.Id == id)
+                .Include(bg => bg.Comments)
+                .ThenInclude(c => c.Author)
+                .FirstOrDefaultAsync();
+            if(bg == null ) 
+            {
+                return NotFound();
+            }
+            return Ok(bg.Comments);
         }
 
         [HttpDelete("DeleteComment/{id}")]
@@ -289,11 +305,12 @@ namespace BoardMeet.Controllers
             string? error = Utils.AccessVerification(comment.AuthorId, HttpContext.User.Identity as ClaimsIdentity);
             if (error != null)
             {
-                BadRequest(error);
+                return BadRequest(error);
             }
 
-            _context.Comments.Remove(comment);
+            
             _context.Entry(comment).State = EntityState.Modified;
+            _context.Comments.Remove(comment);
             await _context.SaveChangesAsync();
 
             BoardGame commentGame = await _context.BoardGames.FindAsync(comment.GameId);
@@ -305,7 +322,7 @@ namespace BoardMeet.Controllers
         }
         [HttpGet("Search/{searchval}")]
         [AllowAnonymous]
-        public async Task<IActionResult> SearchBG(string searchval)
+        public async Task<IActionResult> SearchBoardGames(string searchval)
         {
             List<BoardGame> searchBG = await _context.BoardGames
                 .Where(bg => bg.Name.Contains(searchval))
@@ -317,19 +334,30 @@ namespace BoardMeet.Controllers
 
         [HttpGet("Filter/{genre}")]
         [AllowAnonymous]
-        public async Task<IActionResult> FilterBG(string genre)
+        public async Task<IActionResult> FilterBoardGames(string genre)
         {
             List<BoardGame> searchBG = await _context.BoardGames
                 .Where(bg => bg.Genre.Contains(genre))
-                .Include(bg=> bg.Author)
+                .Include(bg => bg.Author)
                 .ToListAsync();
 
             return Ok(searchBG);
         }
-       
-        private bool CommentExists(int id)
+        [AllowAnonymous]
+        [HttpGet("CreatedBoardGames/{id}")]
+        public async Task<IActionResult> GetCreatedGames(int id)
         {
-            return _context.Comments.Any(e => e.Id == id);
+            var user = await _context.Users
+                .Where(u => u.Id == id)
+                .Include(u => u.CreateBoardGames)
+                .FirstOrDefaultAsync();
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(user.CreateBoardGames);
         }
 
         private bool BoardGameExists(int id)

@@ -1,12 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
-
-namespace BoardMeet.Models
+﻿namespace BoardMeet.Models
 {
     public class BoardGame : BaseEntity
     {
         public string Name { get; set; }
-        public double RangeOfPlayersMin { get; set; }
-        public double RangeOfPlayersMax { get; set; }
+        public int RangeOfPlayersMin { get; set; }
+        public int RangeOfPlayersMax { get; set; }
         public int GameTime { get; set; }
         public double BestRangeOfPlayersMinUser { get; set; }
         public double BestRangeOfPlayersMaxUser { get; set; }
@@ -25,10 +23,10 @@ namespace BoardMeet.Models
         public User? Author { get; set; }
         public int AuthorId { get; set; }
         public int СountComment { get; set; }
-        public List<Comment>? Comments { get; set; }
+        public virtual ICollection<Comment>? Comments { get; set; }
 
         public BoardGame() { }
-        public BoardGame(BoardGameCreateDTO dto) 
+        public BoardGame(BoardGameCreateDTO dto)
         {
             Name = dto.Name;
             RangeOfPlayersMax = dto.RangeOfPlayersMax;
@@ -49,7 +47,7 @@ namespace BoardMeet.Models
             Artists = dto.Artists;
             Publishers = dto.Publishers;
         }
-        public void Change(BoardGameChangeDTO dto) 
+        public void Change(BoardGameChangeDTO dto)
         {
             Name = dto.Name;
             RangeOfPlayersMax = dto.RangeOfPlayersMax;
@@ -60,10 +58,10 @@ namespace BoardMeet.Models
             Genre = dto.Genre;
             AuthorsGame = dto.AuthorsGame;
             Artists = dto.Artists;
-            Publishers= dto.Publishers;
+            Publishers = dto.Publishers;
         }
 
-        public void AddRaitingData(Comment comment) 
+        public void AddRaitingData(Comment comment)
         {
             RatingUser = (RatingUser * СountComment + comment.Rating) / (СountComment + 1);
             WeightGameUser = (WeightGameUser * СountComment + comment.WeightGame) / (СountComment + 1);
@@ -73,7 +71,7 @@ namespace BoardMeet.Models
             BestRangeOfPlayersMinUser = (BestRangeOfPlayersMinUser * СountComment + comment.BestPlayerMin) / (СountComment + 1);
             СountComment++;
         }
-        public void RemoveRaitingData(Comment comment) 
+        public void RemoveRaitingData(Comment comment)
         {
             if (СountComment <= 1)
             {
@@ -89,7 +87,7 @@ namespace BoardMeet.Models
             СountComment--;
         }
 
-        public void RoundUserRating() 
+        public void RoundUserRating()
         {
             AgePlayerUser = Math.Round(AgePlayerUser);
             GameTimeUser = Math.Round(GameTimeUser);
@@ -105,8 +103,8 @@ namespace BoardMeet.Models
     public class BoardGameCreateDTO
     {
         public string Name { get; set; }
-        public float RangeOfPlayersMin { get; set; }
-        public float RangeOfPlayersMax { get; set; }
+        public int RangeOfPlayersMin { get; set; }
+        public int RangeOfPlayersMax { get; set; }
         public int GameTime { get; set; }
         public string Description { get; set; }
         public int AgePlayer { get; set; }
@@ -126,8 +124,8 @@ namespace BoardMeet.Models
         public string Genre { get; set; }
         public string Artists { get; set; }
         public string Publishers { get; set; }
-        public float RangeOfPlayersMin { get; set; }
-        public float RangeOfPlayersMax { get; set; }
+        public int RangeOfPlayersMin { get; set; }
+        public int RangeOfPlayersMax { get; set; }
         public int GameTime { get; set; }
         public string Description { get; set; }
         public int AgePlayer { get; set; }

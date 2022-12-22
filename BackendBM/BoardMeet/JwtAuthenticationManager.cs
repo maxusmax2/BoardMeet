@@ -38,7 +38,7 @@ namespace BoardMeet
                     new Claim(ClaimTypes.Email, user.Email),
                     new Claim(ClaimTypes.Role, user.Role),
                     new Claim("Id", user.Id.ToString())
-                    
+
                 }),
                 Expires = DateTime.UtcNow.AddHours(24),
                 SigningCredentials = new SigningCredentials(
