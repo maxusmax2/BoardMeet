@@ -8,7 +8,7 @@ import { MeetsContext } from "../../helpers/meetsContext";
 
 export const MeetButton = ({ meet, url }) => {
   const user = getUser();
-  const {deleteMeet, changeMeet, closeMeet} = useContext(MeetsContext);
+  const {deleteMeet, changeMeet, userPage} = useContext(MeetsContext);
   const userId = parseInt(user.id);
   let typeMeet = userId != null ? "NotJoined" : null;
   let playersIdList = meet.players.length && meet.players.map((player) => player.id);
@@ -75,7 +75,7 @@ export const MeetButton = ({ meet, url }) => {
   }
   const closeHander = () => {
     axios.post(url + `Meets/Lock/${meet.id}`, {}, getConfig())
-      .then((resp) => closeMeet?changeMeet(resp.data):deleteMeet(meet))
+      .then((resp) => userPage?changeMeet(resp.data):deleteMeet(meet))
       .catch((err) => {
         if (err.response) { console.log("a"); }
         else if (err.request) { console.log("b"); }
