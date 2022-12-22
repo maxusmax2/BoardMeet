@@ -5,7 +5,6 @@ import { useForm } from "react-hook-form";
 import { NavLink, useNavigate } from "react-router-dom";
 import { getDateFormat, getTime } from "../../helpers/date";
 import { getConfig } from "../../helpers/getConfig";
-import { useDataGet } from "../../hooks/useDataGet";
 import { CityMeet, Communication, Date, LightMaxTime, LightPlayers, Location, MinusButton, PlusButton, Time, Write } from "../icons/icons";
 import style from "./changeMeetForm.module.css";
 

@@ -35,7 +35,7 @@ export const GameCard = ({ game, url, delGame }) => {
         <NavLink className={style.author} to = {game.authorId==user?.id?`/user/${game.authorId}/${user?.role}`:`/user/${game.authorId}`}>@{game.author.userName}</NavLink>
         {button}
         <p className={style.shortDesription}>{game.description}</p>
-        <button className={style.buttonRead} onClick={readHandler}>Read</button>
+        <button className={style.buttonRead} onClick={readHandler}>Прочитать</button>
       </div>
 
     </div>

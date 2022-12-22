@@ -1,4 +1,4 @@
-import { useNavigate, NavLink } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import style from "./registration.module.css";
 import { useForm } from 'react-hook-form';
 import axios from "axios";
