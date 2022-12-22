@@ -1,4 +1,5 @@
 
+import { NavLink } from "react-router-dom";
 import { NotFound } from "../../components/icons/icons";
 import style from "./notFoundPage.module.css";
 
@@ -13,6 +14,7 @@ export const NotFoundPage = () => {
         </div>
         <div className={style.notFound}>
           <NotFound />
+          <NavLink to="/"><button type="button" className={style.backToMainButton}>На главную</button></NavLink>
         </div>
 
       </div>
