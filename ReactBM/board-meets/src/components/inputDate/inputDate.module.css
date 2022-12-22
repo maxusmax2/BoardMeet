@@ -1,0 +1,29 @@
+.date{
+    background-color: #FFFFFF;
+    box-shadow: inset 0px 2px 5px rgba(0, 0, 0, 0.25);
+    border-radius: 9px;
+    border: 0;
+    width: 151px;
+    height: 32px;
+    box-sizing: border-box;
+    padding: 7px;
+    font-weight: 400;
+    font-size: 15px;
+    line-height: 100%;  
+    color: black;
+   
+}
+.date:focus{
+    outline: 3px solid #057402;
+}
+.date::-webkit-calendar-picker-indicator {
+   opacity: 0;
+}
+.container{
+    position: relative;
+}
+.inputIcon{
+    position: absolute;
+    right: 7px;
+    top: 4px;
+}

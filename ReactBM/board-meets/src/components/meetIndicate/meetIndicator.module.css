@@ -1,0 +1,19 @@
+.red,
+.green,
+.orange {
+  width: 3px;
+  height: 100%;
+  border-radius: 20px;
+}
+
+.red {
+  background-color: #df828c;
+}
+
+.green {
+  background-color: #adf3ab;
+}
+
+.orange {
+  background-color: #f4c88a;
+}

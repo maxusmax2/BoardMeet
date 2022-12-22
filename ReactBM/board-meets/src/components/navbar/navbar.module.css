@@ -1,48 +1,53 @@
-.container{
+.container {
     max-width: 1489px;
     background: #EDFFEC;
     border: 1px solid #DAFED9;
     box-shadow: 0px 0px 15px -9px rgba(151, 71, 255, 0.4);
     border-radius: 127px;
     height: 76px;
-    display:flex;
+    display: flex;
     justify-content: space-evenly;
     align-items: center;
 }
-.search{
+
+.search {
     display: flex;
     align-items: center;
     outline: 5px solid #64C661;
     border-radius: 66px 66px 66px 66px;
 }
-.searchInput{
+
+.searchInput {
     width: 482px;
     text-indent: 32px;
     height: 38px;
     border: 0;
     border-radius: 66px 0px 0px 66px;
     font-size: 19px;
-    outline:none;
+    outline: none;
     box-shadow: inset 1px 1px 2px rgba(0, 0, 0, 0.1);
 }
 
-.searchButton{
+.searchButton {
+    cursor: pointer;
     width: 62px;
-    height: 38px; 
+    height: 38px;
     border: none;
     border-radius: 0px 66px 66px 0px;
     background-color: #64C661;
 }
-.searchButton:active{
+
+.searchButton:active {
     background-color: #5bb758;
-   
 }
-.linkList{
-    width: 185px;
+
+.linkList {
+    width: 350px;
     height: 100%;
 }
 
-.linkListLink{
+.linkListLink,
+.linkActive {
     display: inline-flex;
     font-size: 25px;
     font-weight: 300;
@@ -51,52 +56,81 @@
     align-items: center;
     justify-content: center;
 }
-.linkListLink:hover{
+
+.linkActive,
+.linkListLink:hover {
     background-color: #C8FEC7;
 }
-.active{
+
+.active {
     background-color: aqua;
 }
-.profileButton{
+
+.profileButton {
+    display: block;
     height: 51px;
-    width:51px;
+    width: 51px;
     border-radius: 39px;
     background-color: #64C661;
     box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.25);
     border: none;
-    box-sizing: border-box; 
-    padding: 10px 0 0 10px;
+    box-sizing: border-box;
+    padding: 14px;
 }
-.profileButton:active{
+
+.profileButton:active {
 
     background-color: #5bb758;
     box-shadow: none;
 
 }
-.profileButton:hover{
-    color: #fff;
-}
-.logInButton{
+
+.exitButton {
     height: 51px;
-    width:126px;
+    width: 51px;
+    border-radius: 39px;
+    background-color: #c6616b;
+    box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.25);
+    border: none;
+
+}
+
+.exitButton:active {
+
+    background-color: #b1525f;
+    box-shadow: none;
+
+}
+
+.logInButton {
+    height: 51px;
+    width: 126px;
     border-radius: 39px;
     background-color: #64C661;
     box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.25);
     border: none;
-    box-sizing: border-box; 
-    padding: 13px 0 0 39px;
+    box-sizing: border-box;
+    padding: 13px 0 0 35px;
     font-size: 20px;
     color: #ffffff;
     font-weight: 400;
 }
-.logInButton:hover{
-    color: #fff;
-}
-.logInButton:active{
+
+.logInButton:active {
 
     background-color: #5bb758;
     box-shadow: none;
 
 }
 
+.logInButton:hover {
 
+    color: #ffffff;
+
+}
+
+.buttons {
+    display: flex;
+    width: 120px;
+    justify-content: space-between;
+}

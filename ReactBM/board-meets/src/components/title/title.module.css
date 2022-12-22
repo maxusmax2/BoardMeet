@@ -1,0 +1,11 @@
+.container{
+    border-bottom: 7px solid #64C661;
+    
+}
+.content{
+    color:#64C661;
+    font-weight: 700;
+    font-size: 32px;
+    line-height: 100%;
+    margin-bottom: 5px;
+}

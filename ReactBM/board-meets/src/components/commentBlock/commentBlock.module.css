@@ -1,0 +1,28 @@
+.container {
+  display: flex;
+  flex-direction: column-reverse;
+}
+
+.commentItem {
+  margin-bottom: 30px;
+  display: flex;
+}
+
+.commentItem:nth-child(even) {
+  justify-content: flex-end;
+}
+
+.notComment {
+  font-size: 25px;
+  color: #057402;
+  margin:20px 0;
+  text-align: center;
+}
+.title{
+  margin-top: 65px;
+}
+.button{
+  display: flex;
+  justify-content: flex-end;
+  margin: 36px 0;
+}

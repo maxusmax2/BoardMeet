@@ -1,30 +1,39 @@
-import { useParams } from "react-router-dom";
-import { MeetCard } from "../../components/meetCard/meetCard";
+import { useState } from "react";
+import { NavLink, useParams } from "react-router-dom";
+import { AddButton } from "../../components/addButton/addButton";
+import { MeetList } from "../../components/meetList/meetList";
 import { Switch } from "../../components/switch/switch";
-import { UserMainInfo } from "../../components/userMainInfo/userMainInfo";
-import { useData } from "../../hooks/useData";
 import style from "./playerPage.module.css";
 
-export const PlayerPage = () => {
-    let {id} =useParams();
-    const meets = useData("https://jsonplaceholder.typicode.com/comments?postId=" + id);
+export const PlayerPage = ({ url }) => {
 
-    const radioHandler = (value) => {
-        if (value==1){
-            console.log(1);
-        }
-        else  console.log(2);
+  let { userId } = useParams();
+  const [typeMeet, setTypeMeet] = useState({ type: "Created", url: url + "Meets/CreatedMeet/" + userId });
+
+  let linkAdd = null;
+
+  if (typeMeet.type === "Created") {
+    linkAdd =
+      <NavLink to={`/user/${userId}/createMeet`}> <AddButton /></NavLink>
+  }
+
+  const radioHandler = (value) => {
+    switch (value) {
+      case "1":
+        setTypeMeet({ type: "Created", url: url + "Meets/CreatedMeet/" + userId });
+        break;
+      case "2":
+        setTypeMeet({ type: "Joined", url: url + "Meets/JoinedMeet/" + userId });
+        break;
     }
-
-    return(
-        <div className={style.container}>
-            <UserMainInfo id = {id}/>
-            <Switch label1 = "Created meets" label2 = "Joined meets" radioHandler = {radioHandler}/>
-            <ul>
-            {!!meets?.length && meets.map((meet) => 
-                <MeetCard meet={meet}/>
-            )}
-            </ul>
-        </div>
-    );
+  }
+  return (
+    <>
+      <div className={style.switch}>
+        <Switch radioHandler={radioHandler} />
+      </div>
+      {linkAdd}
+      <MeetList meetUrl={typeMeet.url} url={url} />
+    </>
+  );
 }

@@ -1,35 +1,52 @@
 import style from "./navbar.module.css";
-import { NavLink } from "react-router-dom";
-import { Logo, Search, User } from "../icons/icons";
+import { NavLink, useNavigate } from "react-router-dom";
+import { Exit, Logo, Search, User } from "../icons/icons";
+import { getUser } from "../../helpers/getUser";
+import { useState } from "react";
 
 
-export const Navbar = ({auth}) => {
-    console.log (auth);
-    let buttonLink = <NavLink to = "/logIn" className = {style.logInButton}>LogIn</NavLink>;
+export const Navbar = ({ exitHandler }) => {
+  const user = getUser();
+  const[search,setSearch] = useState("")
+  const navigate = useNavigate();
 
-    if (auth){
-        buttonLink = 
-            <NavLink to = "/user/2" className = {style.profileButton}>
-                <User/>
-            </NavLink> 
+  let buttonLink = <NavLink to="/logIn" className={style.logInButton}>Войти</NavLink>;
+
+  if (user != "0" && user != undefined) {
+    buttonLink =
+      <div className={style.buttons}>
+        <NavLink to={`user/${user.id}/${user.role}`} className={style.profileButton}>
+          <User />
+        </NavLink>
+        <button type="button" className={style.exitButton} onClick={exitHandler}><Exit /></button>
+      </div>
+  }
+
+  const searchHandler = () => {
+    if(search){
+    navigate(`/search/${search}`);
     }
-    
-    return(
-        <nav className = {style.container}>
-            <div className = {style.logo}>
-                <Logo/>
-            </div>
-            <div className = {style.search}>
-                <input type="text" className = {style.searchInput} placeholder="Search your lover game"></input>
-                <button type="button" className = {style.searchButton}><Search/></button>
-            </div>
-            
-            <div className={style.linkList}>
-                <NavLink to = "/meets" className={style.linkListLink} >Meets</NavLink>
-                <NavLink to = "/games" className={style.linkListLink}>Games</NavLink>
-            </div>
+    else navigate(`/search/null`);
+  }
 
-            {buttonLink}       
-        </nav>
-    );
+  return (
+    <nav className={style.container}>
+      <div className={style.logo}>
+        <NavLink to={"/"}>
+          <Logo />
+        </NavLink>
+      </div>
+      <div className={style.search}>
+        <input type="search" className={style.searchInput} placeholder="Найдите свою любимую игру"  onChange={(e)=>setSearch(e.target.value)}></input>
+        <button type="button" className={style.searchButton} onClick={searchHandler}><Search /></button>
+      </div>
+
+      <div className={style.linkList}>
+        <NavLink to="/" className={({isActive})=>isActive?style.linkActive:style.linkListLink} >Мероприятия</NavLink>
+        <NavLink to="/games" className={({isActive})=>isActive?style.linkActive:style.linkListLink}>Игры</NavLink>
+      </div>
+
+      {buttonLink}
+    </nav>
+  );
 }
